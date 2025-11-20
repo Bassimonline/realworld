@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Rocket, Star, ShoppingCart, ArrowLeft, Clock, Zap, AlertCircle } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom"; // removed useLocation
+import { Link, useNavigate } from "react-router-dom";
 import { Player } from "@lottiefiles/react-lottie-player";
 import icon_31 from "../images/icon_31.json";
 
@@ -54,7 +54,8 @@ const PreSale = () => {
   });
 
   useEffect(() => {
-    const SALE_END_DATE = new Date("2025-12-05T23:59:59Z");
+    // Current time is 2025-11-20T03:50:27Z. Setting end date in the future for testing.
+    const SALE_END_DATE = new Date("2026-01-05T23:59:59Z");
     const tick = () => {
       const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'UTC' }));
       const diff = SALE_END_DATE.getTime() - now.getTime();
@@ -73,7 +74,6 @@ const PreSale = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // ⬇️ UPDATED: Save details + pass via state
   const handleProceedToPayment = () => {
     const solValue = parseFloat(amount);
     if (isNaN(solValue)) {
@@ -141,107 +141,11 @@ const PreSale = () => {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-gradient-to-br from-yellow-900/20 via-orange-900/20 to-gray-900/50 rounded-2xl shadow-2xl overflow-hidden border border-yellow-500/30 mb-8 backdrop-blur-sm">
-          <div className="p-4 sm:p-6">
-            {/* Mobile Layout */}
-            <div className="block sm:hidden">
-              <div className="flex items-start justify-between">
-                <div className="flex items-center space-x-3">
-                  <div className="p-2 rounded-lg bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border border-yellow-500/30">
-                    <Star className="h-5 w-5 text-yellow-400" fill="currentColor" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-white">Bonus</h3>
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <div className={`p-1.5 rounded-md ${numericAmount >= 5 ? "bg-purple-500/10 border border-purple-500/30" : numericAmount >= 1 ? "bg-orange-500/10 border border-orange-500/30" : "bg-gray-800/70 border border-gray-700"}`}>
-                    <Zap className={`h-4 w-4 ${numericAmount >= 5 ? "text-purple-400" : numericAmount >= 1 ? "text-orange-400" : "text-gray-500"}`} fill="currentColor" />
-                  </div>
-                  <span className={`text-base font-bold ${numericAmount >= 5 ? "text-purple-400" : numericAmount >= 1 ? "text-orange-400" : "text-gray-500"}`}>
-                    {numericAmount >= 5 ? "35%" : numericAmount >= 1 ? "10%" : "0%"}
-                  </span>
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <div className="flex items-center justify-between mb-2">
-                  <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full ${numericAmount >= 1 ? "bg-green-900/50 text-green-300 border border-green-500/30" : "bg-gray-800/70 text-gray-500 border border-gray-700"}`}>1 SOL = 10 %</span>
-                  <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full ${numericAmount >= 5 ? "bg-purple-900/50 text-purple-300 border border-purple-500/30" : "bg-gray-800/70 text-gray-500 border border-gray-700"}`}>5 SOL = 35 %</span>
-                </div>
-
-                <div className="relative h-2 bg-gray-800/70 rounded-full overflow-hidden">
-                  <div className={`absolute inset-0 rounded-full ${numericAmount >= 5 ? "bg-purple-500/20" : "bg-orange-500/20"} blur-sm`} />
-                  <motion.div
-                    className="absolute inset-y-0 left-0 rounded-full"
-                    initial={{ width: 0 }}
-                    animate={{
-                      width: `${Math.min(100, (numericAmount / 5) * 100)}%`,
-                      background: numericAmount >= 5
-                        ? "linear-gradient(90deg, rgba(168,85,247,0.8) 0%, rgba(236,72,153,0.8) 100%)"
-                        : "linear-gradient(90deg, rgba(249,115,22,0.8) 0%, rgba(234,179,8,0.8) 100%)",
-                    }}
-                    transition={{ duration: 0.5 }}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Desktop Layout */}
-            <div className="hidden sm:flex flex-col sm:flex-row items-center justify-between gap-6">
-              <div className="flex items-center space-x-4">
-                <div className="p-2.5 rounded-lg bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border border-yellow-500/30">
-                  <Star className="h-6 w-6 text-yellow-400" fill="currentColor" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-white">
-                    Bonus <span className="mobile-view-result">{numericAmount >= 5 ? "35%" : numericAmount >= 1 ? "10%" : "0%"}</span>{" "}
-                    <span className="bonus-main-heading">Tiers</span>
-                  </h3>
-                  <p className="text-yellow-200/80 text-sm bonus-sub-heading">Unlock higher rewards with larger purchases</p>
-                </div>
-              </div>
-
-              <div className="flex-1 w-full max-w-2xl">
-                <div className="flex items-center justify-between mb-3">
-                  <span className={`text-xs font-medium px-2 py-1 rounded-full ${numericAmount >= 1 ? "bg-green-900/50 text-green-300 border border-green-500/30" : "bg-gray-800/70 text-gray-500 border border-gray-700"}`}>1 SOL → 10%</span>
-                  <span className={`text-xs font-medium px-2 py-1 rounded-full ${numericAmount >= 5 ? "bg-purple-900/50 text-purple-300 border border-purple-500/30" : "bg-gray-800/70 text-gray-500 border border-gray-700"}`}>5 SOL → 35%</span>
-                </div>
-
-                <div className="relative h-2.5 bg-gray-800/70 rounded-full overflow-hidden">
-                  <div className={`absolute inset-0 rounded-full ${numericAmount >= 5 ? "bg-purple-500/20" : "bg-orange-500/20"} blur-sm`} />
-                  <motion.div
-                    className="absolute inset-y-0 left-0 rounded-full"
-                    initial={{ width: 0 }}
-                    animate={{
-                      width: `${Math.min(100, (numericAmount / 5) * 100)}%`,
-                      background: numericAmount >= 5
-                        ? "linear-gradient(90deg, rgba(168,85,247,0.8) 0%, rgba(236,72,153,0.8) 100%)"
-                        : "linear-gradient(90deg, rgba(249,115,22,0.8) 0%, rgba(234,179,8,0.8) 100%)",
-                    }}
-                    transition={{ duration: 0.5 }}
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center space-x-3">
-                <div className={`p-2 rounded-lg ${numericAmount >= 5 ? "bg-purple-500/10 border icon-bonus border-purple-500/30" : numericAmount >= 1 ? "bg-orange-500/10 border border-orange-500/30" : "bg-gray-800/70 border border-gray-700"}`}>
-                  <Zap className={`h-5 w-5 ${numericAmount >= 5 ? "text-purple-400 icon-bonus" : numericAmount >= 1 ? "text-orange-400" : "text-gray-500"}`} fill="currentColor" />
-                </div>
-                <div className="your-bonus">
-                  <p className="text-xs text-gray-400">Your Bonus</p>
-                  <p className={`text-lg font-bold ${numericAmount >= 5 ? "text-purple-400" : numericAmount >= 1 ? "text-orange-400" : "text-gray-500"}`}>
-                    {numericAmount >= 5 ? "35%" : numericAmount >= 1 ? "10%" : "0%"}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        
+        {/* The previous Bonus Tiers box was here. It has been moved into the grid below. */}
 
         <div className="grid lg:grid-cols-2 gap-8">
-          {/* Purchase Card */}
+          {/* Purchase Card (Column 1) */}
           <div className="bg-gradient-to-br from-gray-900/80 to-gray-900/50 rounded-2xl shadow-2xl overflow-hidden border border-gray-800/50 backdrop-blur-sm">
             <div className="p-6 border-b border-gray-800/50">
               <div className="flex items-center justify-between">
@@ -404,8 +308,109 @@ const PreSale = () => {
             </div>
           </div>
 
-          {/* Benefits Section */}
+          {/* Benefits Section (Column 2) */}
           <div className="space-y-6">
+            {/* 🚀 NEW LOCATION FOR BONUS PROGRESS BOX 🚀 */}
+            <div className="bg-gradient-to-br from-yellow-900/20 via-orange-900/20 to-gray-900/50 rounded-2xl shadow-2xl overflow-hidden border border-yellow-500/30 backdrop-blur-sm">
+              <div className="p-4 sm:p-6">
+                {/* Mobile Layout */}
+                <div className="block sm:hidden">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="p-2 rounded-lg bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border border-yellow-500/30">
+                        <Star className="h-5 w-5 text-yellow-400" fill="currentColor" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-white">Bonus</h3>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center space-x-2">
+                      <div className={`p-1.5 rounded-md ${numericAmount >= 5 ? "bg-purple-500/10 border border-purple-500/30" : numericAmount >= 1 ? "bg-orange-500/10 border border-orange-500/30" : "bg-gray-800/70 border border-gray-700"}`}>
+                        <Zap className={`h-4 w-4 ${numericAmount >= 5 ? "text-purple-400" : numericAmount >= 1 ? "text-orange-400" : "text-gray-500"}`} fill="currentColor" />
+                      </div>
+                      <span className={`text-base font-bold ${numericAmount >= 5 ? "text-purple-400" : numericAmount >= 1 ? "text-orange-400" : "text-gray-500"}`}>
+                        {numericAmount >= 5 ? "35%" : numericAmount >= 1 ? "10%" : "0%"}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="mt-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full ${numericAmount >= 1 ? "bg-green-900/50 text-green-300 border border-green-500/30" : "bg-gray-800/70 text-gray-500 border border-gray-700"}`}>1 SOL = 10 %</span>
+                      <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full ${numericAmount >= 5 ? "bg-purple-900/50 text-purple-300 border border-purple-500/30" : "bg-gray-800/70 text-gray-500 border border-gray-700"}`}>5 SOL = 35 %</span>
+                    </div>
+
+                    <div className="relative h-2 bg-gray-800/70 rounded-full overflow-hidden">
+                      <div className={`absolute inset-0 rounded-full ${numericAmount >= 5 ? "bg-purple-500/20" : "bg-orange-500/20"} blur-sm`} />
+                      <motion.div
+                        className="absolute inset-y-0 left-0 rounded-full"
+                        initial={{ width: 0 }}
+                        animate={{
+                          width: `${Math.min(100, (numericAmount / 5) * 100)}%`,
+                          background: numericAmount >= 5
+                            ? "linear-gradient(90deg, rgba(168,85,247,0.8) 0%, rgba(236,72,153,0.8) 100%)"
+                            : "linear-gradient(90deg, rgba(249,115,22,0.8) 0%, rgba(234,179,8,0.8) 100%)",
+                        }}
+                        transition={{ duration: 0.5 }}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Desktop Layout */}
+                <div className="hidden sm:flex flex-col sm:flex-row items-center justify-between gap-6">
+                  <div className="flex items-center space-x-4">
+                    <div className="p-2.5 rounded-lg bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border border-yellow-500/30">
+                      <Star className="h-6 w-6 text-yellow-400" fill="currentColor" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-white">
+                        Bonus <span className="mobile-view-result">{numericAmount >= 5 ? "35%" : numericAmount >= 1 ? "10%" : "0%"}</span>{" "}
+                        <span className="bonus-main-heading">Tiers</span>
+                      </h3>
+                      <p className="text-yellow-200/80 text-sm bonus-sub-heading">Unlock higher rewards with larger purchases</p>
+                    </div>
+                  </div>
+
+                  <div className="flex-1 w-full max-w-2xl">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className={`text-xs font-medium px-2 py-1 rounded-full ${numericAmount >= 1 ? "bg-green-900/50 text-green-300 border border-green-500/30" : "bg-gray-800/70 text-gray-500 border border-gray-700"}`}>1 SOL → 10%</span>
+                      <span className={`text-xs font-medium px-2 py-1 rounded-full ${numericAmount >= 5 ? "bg-purple-900/50 text-purple-300 border border-purple-500/30" : "bg-gray-800/70 text-gray-500 border border-gray-700"}`}>5 SOL → 35%</span>
+                    </div>
+
+                    <div className="relative h-2.5 bg-gray-800/70 rounded-full overflow-hidden">
+                      <div className={`absolute inset-0 rounded-full ${numericAmount >= 5 ? "bg-purple-500/20" : "bg-orange-500/20"} blur-sm`} />
+                      <motion.div
+                        className="absolute inset-y-0 left-0 rounded-full"
+                        initial={{ width: 0 }}
+                        animate={{
+                          width: `${Math.min(100, (numericAmount / 5) * 100)}%`,
+                          background: numericAmount >= 5
+                            ? "linear-gradient(90deg, rgba(168,85,247,0.8) 0%, rgba(236,72,153,0.8) 100%)"
+                            : "linear-gradient(90deg, rgba(249,115,22,0.8) 0%, rgba(234,179,8,0.8) 100%)",
+                        }}
+                        transition={{ duration: 0.5 }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-3">
+                    <div className={`p-2 rounded-lg ${numericAmount >= 5 ? "bg-purple-500/10 border icon-bonus border-purple-500/30" : numericAmount >= 1 ? "bg-orange-500/10 border border-orange-500/30" : "bg-gray-800/70 border border-gray-700"}`}>
+                      <Zap className={`h-5 w-5 ${numericAmount >= 5 ? "text-purple-400 icon-bonus" : numericAmount >= 1 ? "text-orange-400" : "text-gray-500"}`} fill="currentColor" />
+                    </div>
+                    <div className="your-bonus">
+                      <p className="text-xs text-gray-400">Your Bonus</p>
+                      <p className={`text-lg font-bold ${numericAmount >= 5 ? "text-purple-400" : numericAmount >= 1 ? "text-orange-400" : "text-gray-500"}`}>
+                        {numericAmount >= 5 ? "35%" : numericAmount >= 1 ? "10%" : "0%"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* 🚀 END OF BONUS PROGRESS BOX 🚀 */}
+
             {/* Mobile-only Roadmap Section */}
             <div className="lg:hidden max-w-[1236px] mx-auto flex flex-col items-center z-50 relative">
               <div className="flex flex-col items-center">
@@ -413,8 +418,8 @@ const PreSale = () => {
                   <Player autoplay loop src={icon_31} className="w-10 h-10 mr-3 sm:mr-4" style={{ marginTop: "-115%", marginLeft: "-29%" }} />
                   <motion.h2 className="mb-2 text-center capitalize switzer tracking-[-1px] lg:tracking-[-3px] text-3xl sm:text-4xl md:text-[44px] lg:text-[55px]">
                     <span className="texture-text flex flex-col sm:block">
-                      <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">$TRW Launches</span>
-                      <span className="sm:inline-block mt-1 sm:mt-0 sm:ml-2">at $0.25</span>
+                      <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">$TRW Launche</span>
+                      <span className="sm:inline-block mt-1 sm:mt-0 sm:ml-2"> is Live</span>
                     </span>
                   </motion.h2>
                 </div>

@@ -175,14 +175,7 @@ const CountdownTimer = () => {
 const Hero = () => {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
-  // If you want the video to be lazy-loaded on click, reintroduce `isPlaying` and
-  // the overlay — for now we show the Vimeo embed immediately.
-  // playback state for overlay/video
-
-  // No overlay play handling by default — iframe displays immediately.
-
-  // keyboard handling for overlay (Enter/Space) not required; we rely on native button activation
-
+  
   return (
     <>
       <div id="home" className="relative overflow-hidden">
@@ -253,15 +246,19 @@ const Hero = () => {
 
               {/* Promotional video (public/promovideo.mp4) placed directly under the logo */}
               <motion.div className="w-full relative z-[999] max-w-4xl mx-auto">
-                <div className="relative w-full pb-[56.25%] rounded-xl overflow-hidden shadow-2xl">
-                  <iframe
-                    src="https://player.vimeo.com/video/1138222682"
-                    title="Vimeo video"
-                    className="absolute top-0 left-0 w-full h-full"
-                    frameBorder="0"
-                    allow="autoplay; fullscreen; picture-in-picture"
-                    allowFullScreen
-                  ></iframe>
+                <div className="relative w-full pb-[56.25%] rounded-xl overflow-hidden shadow-2xl bg-black">
+                  <video 
+                    className="absolute top-0 left-0 w-full h-full object-cover"
+                    autoPlay
+                    muted
+                    loop
+                    controls
+                    playsInline
+                    preload="metadata"
+                  >
+                    <source src="/promovideo.mp4" type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
                 </div>
               </motion.div>
 
@@ -306,31 +303,19 @@ const Hero = () => {
             </motion.button>
 
             {/* Student Count and Image - CORRECTED BOLDING and INCREASED IMAGE SIZE */}
-<motion.div className="flex items-center space-x-3">
-  {/* Smaller image with preserved aspect ratio */}
-  <img
-    src="https://www.therealworldportal.com/wp-content/uploads/the-real-world-students-icon.webp"
-    alt="Students icon"
-    className="w-20 sm:w-24 h-auto" // smaller width, height adjusts automatically
-  />
+            <motion.div className="flex items-center space-x-3">
+              {/* Smaller image with preserved aspect ratio */}
+              <img
+                src="https://www.therealworldportal.com/wp-content/uploads/the-real-world-students-icon.webp"
+                alt="Students icon"
+                className="w-20 sm:w-24 h-auto" // smaller width, height adjusts automatically
+              />
 
-  {/* Text with bold number */}
-  <p className="text-white text-sm sm:text-base">
-    <span className="font-bold">213,500+</span> like-minded students
-  </p>
-</motion.div>
-
-
-
-
-
-            {/* Heading moved above - removed duplicate */}
-
-            {/* Video and thumbnail removed */}
-
-            {/* Join button removed */}
-
-
+              {/* Text with bold number */}
+              <p className="text-white text-sm sm:text-base">
+                <span className="font-bold">213,500+</span> like-minded students
+              </p>
+            </motion.div>
 
             {/* Mobile countdown section */}
             {isMobile && (
@@ -409,26 +394,6 @@ const Hero = () => {
               </motion.div>
             </motion.button>
 
-
-            {/* Replaced GIF with autoplaying video */}
-            {/* <motion.div
-              className="w-full max-w-[800px] mx-auto mt-12 lg:mt-16 px-4 flex justify-center"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.8 }}
-            >
-              <video
-                className="max-w-full h-auto rounded-lg"
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="auto"
-              >
-                <source src={globe} type="video/webm" />
-                Your browser does not support the video tag.
-              </video>
-            </motion.div> */}
           </section>
         </div>
 

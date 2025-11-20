@@ -548,8 +548,8 @@ const PreSale = () => {
                   <Player autoplay loop src={icon_31} className="w-10 h-10 mr-3 sm:mr-4" style={{ marginTop: "-115%", marginLeft: "-29%" }} />
                   <motion.h2 className="mb-2 text-center capitalize switzer tracking-[-1px] lg:tracking-[-3px] text-3xl sm:text-4xl md:text-[44px] lg:text-[55px]">
                     <span className="texture-text flex flex-col sm:block">
-                      <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">$TRW Launches</span>
-                      <span className="sm:inline-block mt-1 sm:mt-0 sm:ml-2">at $0.25</span>
+                      <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">$TRW Launche</span>
+                      <span className="sm:inline-block mt-1 sm:mt-0 sm:ml-2"></span>
                     </span>
                   </motion.h2>
                 </div>
