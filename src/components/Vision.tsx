@@ -1,13 +1,11 @@
 import { useRef } from "react";
 import { motion, useAnimation, useInView, Variants } from "framer-motion";
-import { andrew1, bg2 } from "../images";
-import { Earth } from "lucide-react";
+import { bg2 } from "../images";
 import { Link } from "react-router-dom";
-import icon_31 from "../images/icon_31.json";
 import icon_3 from "../images/icon_3.json";
 import { Player } from "@lottiefiles/react-lottie-player";
 
-// Animation variants
+// Animation variants (Keeping these for motion effects)
 const containerVariants: Variants = {
   hidden: {},
   visible: {
@@ -32,15 +30,19 @@ const fadeUp: Variants = {
 };
 
 const cardVariants: Variants = {
-  hidden: { opacity: 0, y: 64, scale: 0.96 },
+  hidden: { opacity: 0, y: 40, opacity: 0 },
   visible: {
     opacity: 1,
     y: 0,
-    scale: 1,
     transition: {
-      duration: 0.7,
+      duration: 0.6,
       ease: [0.42, 0.8, 0.2, 1],
     },
+  },
+  hover: {
+    backgroundColor: "rgba(26,26,33,0.95)", // Slightly brighter on hover
+    boxShadow: "0 4px 15px rgba(255,141,58,0.1)", 
+    transition: { duration: 0.2 },
   },
 };
 
@@ -62,13 +64,49 @@ const btnVariants: Variants = {
   },
   tap: {
     scale: 0.97,
-    boxShadow: "0 2px 12px 0 rgba(255,207,35,0.25)",
+    boxShadow: "0 2px 12px 0 rgba(255,255,255,0.25)",
     transition: { duration: 0.13 },
   },
 };
 
+// --- Card Component Refactoring for Compactness ---
+const CompactVisionCard = ({ number, title, text, custom }: { number: number, title: string, text: React.ReactNode, custom: number }) => (
+    <motion.article
+        className="relative rounded-xl overflow-hidden bg-[rgba(26,26,33,0.8)] border border-[rgba(255,255,255,.1)] cursor-pointer h-full"
+        variants={cardVariants}
+        whileHover="hover"
+        custom={custom}
+    >
+        {/* Accent Bar - Takes minimal vertical space */}
+        <div 
+            className="h-1" 
+            style={{ background: "linear-gradient(90deg, #FFD600 0%, #FF8D3A 100%)" }}
+        ></div>
+
+        <div className="p-4 sm:p-5 lg:p-6 text-left flex flex-col justify-start space-y-2"> 
+            
+            {/* Title Block: Number + Text */}
+            <div className="flex items-center space-x-3 mb-1">
+                {/* Number as a simple, small accent */}
+                <div className="switzer text-base font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">
+                    {number}.
+                </div>
+                {/* Title */}
+                <h3 className="text-white text-lg lg:text-xl font-bold leading-snug"> 
+                    {title}
+                </h3>
+            </div>
+            
+            {/* Description */}
+            <p className="text-sm lg:text-base leading-snug text-gray-400">
+                {text}
+            </p>
+        </div>
+    </motion.article>
+);
+
+
 const Vision = () => {
-  // For best performance, only animate when in view
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
   const controls = useAnimation();
@@ -78,22 +116,22 @@ const Vision = () => {
     <>
       <div id="vision" className="pt-20" ref={ref}>
         <motion.section
-          className="w-full relative   z-20"
+          className="w-full relative z-20"
           initial="hidden"
           animate={controls}
           variants={containerVariants}
         >
-          {/* Background */}
+          {/* Background Section (Unchanged) */}
           <motion.div
             className="lg:block w-full absolute top-0 left-0 z-0 max-h-[1020px]"
             initial={{ opacity: 0, scale: 1.02 }}
             animate={
               inView
                 ? {
-                  opacity: 1,
-                  scale: 1,
-                  transition: { duration: 1.1, ease: [0.4, 0.7, 0.2, 1] },
-                }
+                    opacity: 1,
+                    scale: 1,
+                    transition: { duration: 1.1, ease: [0.4, 0.7, 0.2, 1] },
+                  }
                 : {}
             }
           >
@@ -113,6 +151,7 @@ const Vision = () => {
             <div className="right-fade-b pointer-events-none"></div>
             <div className="bottom-fade-b pointer-events-none"></div>
           </motion.div>
+          {/* Content Section */}
           <motion.div
             style={{ opacity: 1, transform: "translateY(20px)" }}
             variants={fadeUp}
@@ -120,7 +159,7 @@ const Vision = () => {
           >
             <div className="z-10 relative px-4">
               <motion.h3
-                className="uppercase  text-center  lg:text-[16px] mb-3 text-gradient"
+                className="uppercase text-center lg:text-[16px] mb-3 text-gradient"
                 variants={fadeUp}
               >
                 🚀 Our Vision
@@ -136,9 +175,9 @@ const Vision = () => {
                     autoplay
                     loop
                     src={icon_3}
-                    className=" w-10 h-10 mr-3 sm:mr-4"
+                    className="w-10 h-10 mr-3 sm:mr-4"
                     style={{
-                      transform: "translateY(2px)", // Fine-tune vertical alignment
+                      transform: "translateY(2px)",
                     }}
                   />
                   <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
@@ -158,174 +197,108 @@ const Vision = () => {
                 knowledge, build wealth, and dominate every aspect of life.
               </motion.p>
               <motion.div
-                className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-[1200px] mx-auto mt-12 lg:mt-24"
+                className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-8 max-w-[1200px] mx-auto mt-10 lg:mt-20"
                 variants={containerVariants}
               >
-                {/* Card 1 */}
-                <motion.article
-                  className="border-[1px] border-[rgba(255,255,255,.27)] rounded-[25px] relative chance bg-[rgba(26,26,33,0.87)] overflow-hidden"
-                  variants={cardVariants}
-                  custom={0}
-                >
-                  <div className="lg:block w-full absolute top-0 left-0 z-0 pointer-events-none overflow-hidden h-[80%] rounded-t-[25px] ">
-                    <div className="absolute top-0 left-0 z-0 w-full h-full pointer-events-none  flex justify-center backdrop-blur-xl "></div>
-                    <img
-                      alt="Act Now"
-                      loading="lazy"
-                      width="936"
-                      height="1492"
-                      decoding="async"
-                      data-nimg="1"
-                      className="w-full object-cover h-full"
-                      src={andrew1}
-                      style={{ color: "transparent" }}
-                    />
-                  </div>
-                  <div className="relative z-10 p-6 text-center">
-                    <div className="flex justify-center">
-                      <div className="number rounded-full switzer text-xl lg:text-2xl">
-                        1
-                      </div>
-                    </div>
-                    <h3 className="text-white text-2xl lg:text-3xl mt-4 font-bold">
-                      Time is Running Out
-                    </h3>
-                    <p className="text-pretty mt-4 text-base lg:text-lg">
-                      The world is transforming in 2025. Are you ready to take
-                      on the change or will you be left behind?{" "}
-                      <span className="font-bold text-white">
-                        Act now before it's too late!
-                      </span>
-                    </p>
-                  </div>
-                </motion.article>
-                {/* Card 2 */}
-                <motion.article
-                  className="border-[1px] border-[rgba(255,255,255,.27)] rounded-[25px] relative chance bg-[rgba(26,26,33,0.87)] overflow-hidden"
-                  variants={cardVariants}
-                  custom={1}
-                >
-                  <div className="lg:block w-full absolute top-0 left-0 z-0 pointer-events-none overflow-hidden h-[80%] rounded-t-[25px]">
-                    <div className="absolute top-0 left-0 z-0 w-full h-full pointer-events-none  flex justify-center backdrop-blur-xl "></div>
-                    <img
-                      alt="AI is Here"
-                      loading="lazy"
-                      width="936"
-                      height="1492"
-                      decoding="async"
-                      data-nimg="1"
-                      className="w-full object-cover h-full"
-                      src={andrew1}
-                      style={{ color: "transparent" }}
-                    />
-                  </div>
-                  <div className="relative z-10 p-6 text-center">
-                    <div className="flex justify-center">
-                      <div className="number rounded-full switzer text-xl lg:text-2xl">
-                        2
-                      </div>
-                    </div>
-                    <h3 className="text-white text-2xl lg:text-3xl mt-4 font-bold">
-                      Embrace the AI Revolution
-                    </h3>
-                    <p className="text-pretty mt-4 text-base lg:text-lg">
-                      Leverage the power of AI to 10x your productivity and
-                      income.{" "}
-                      <span className="font-bold text-white">
-                        Don't sleep on the robots that can revolutionize your
-                        life.
-                      </span>
-                    </p>
-                  </div>
-                </motion.article>
-                {/* Card 3 */}
-                <motion.article
-                  className="border-[1px] border-[rgba(255,255,255,.27)] rounded-[25px] relative chance bg-[rgba(26,26,33,0.87)] overflow-hidden"
-                  variants={cardVariants}
-                  custom={2}
-                >
-                  <div className="lg:block w-full absolute top-0 left-0 z-0 pointer-events-none overflow-hidden h-[80%] rounded-t-[25px]">
-                    <div className="absolute top-0 left-0 z-0 w-full h-full pointer-events-none  flex justify-center backdrop-blur-xl "></div>
-                    <img
-                      alt="Invest in Yourself"
-                      loading="lazy"
-                      width="936"
-                      height="1492"
-                      decoding="async"
-                      data-nimg="1"
-                      className="w-full object-cover h-full"
-                      src={andrew1}
-                      style={{ color: "transparent" }}
-                    />
-                  </div>
-                  <div className="relative z-10 p-6 text-center">
-                    <div className="flex justify-center">
-                      <div className="number rounded-full switzer text-xl lg:text-2xl">
-                        3
-                      </div>
-                    </div>
-                    <h3 className="text-white text-2xl lg:text-3xl mt-4 font-bold">
-                      Invest in Yourself
-                    </h3>
-                    <p className="text-pretty mt-4 text-base lg:text-lg">
-                      Learning a skill is the key to unlocking freedom, income,
-                      and success.{" "}
-                      <span className="font-bold text-white">
-                        Your future starts with the actions you take today.
-                      </span>
-                    </p>
-                  </div>
-                </motion.article>
+                {/* Card 1: Time is Running Out */}
+                <CompactVisionCard
+                    number={1}
+                    title="Time is Running Out"
+                    custom={0}
+                    text={
+                        <>
+                            The world is transforming in 2025. Are you ready to take
+                            on the change or will you be left behind?{" "}
+                            <span className="font-bold text-white">
+                                Act now before it's too late!
+                            </span>
+                        </>
+                    }
+                />
+
+                {/* Card 2: Embrace the AI Revolution */}
+                <CompactVisionCard
+                    number={2}
+                    title="Embrace the AI Revolution"
+                    custom={1}
+                    text={
+                        <>
+                            Leverage the power of AI to 10x your productivity and
+                            income.{" "}
+                            <span className="font-bold text-white">
+                                Don't sleep on the robots that can revolutionize your
+                                life.
+                            </span>
+                        </>
+                    }
+                />
+
+                {/* Card 3: Invest in Yourself */}
+                <CompactVisionCard
+                    number={3}
+                    title="Invest in Yourself"
+                    custom={2}
+                    text={
+                        <>
+                            Learning a skill is the key to unlocking freedom, income,
+                            and success.{" "}
+                            <span className="font-bold text-white">
+                                Your future starts with the actions you take today.
+                            </span>
+                        </>
+                    }
+                />
               </motion.div>
-       <Link to="token-sale">
-              <motion.a
-                href="#"
-                className="block w-full max-w-[340px] mx-auto px-2 mt-6 lg:mt-10"
-                variants={btnVariants}
-                initial="initial"
-                animate="animate"
-                whileTap="tap"
-                whileHover="animate"
-                style={{ WebkitTapHighlightColor: "transparent", borderRadius:"50px" }}
-              >
-                <motion.div
-                  className="relative w-full rounded-full overflow-hidden"
-                  style={{
-                    background:
-                      "linear-gradient(91deg,#ffd600 0%,#ff8d3a 100%)",
-                  }}
-                  layout
-                  transition={{ duration: 0.28, ease: "easeInOut" }}
+              {/* Buy $TRW Button (Unchanged) */}
+              <Link to="token-sale">
+                <motion.a
+                  href="#"
+                  className="block w-full max-w-[340px] mx-auto px-2 mt-6 lg:mt-10"
+                  variants={btnVariants}
+                  initial="initial"
+                  animate="animate"
+                  whileTap="tap"
+                  whileHover="animate"
+                  style={{ WebkitTapHighlightColor: "transparent", borderRadius:"50px" }}
                 >
-                  {/* Subtle shine effect */}
                   <motion.div
-                    className="absolute left-0 top-0 w-1/2 h-full pointer-events-none z-10"
-                    initial={{ opacity: 0 }}
-                    animate={{
-                      opacity: [0, 0.18, 0],
-                      x: ["-55%", "120%"],
-                    }}
-                    transition={{
-                      repeat: Infinity,
-                      duration: 1.5,
-                      ease: "easeInOut",
-                      delay: 0.28,
-                    }}
+                    className="relative w-full rounded-full overflow-hidden"
                     style={{
                       background:
-                        "linear-gradient(120deg,rgba(255,255,255,0.0) 40%,rgba(255,255,255,0.16) 55%,rgba(255,255,255,0.0) 70%)",
-                      filter: "blur(8px)",
+                        "linear-gradient(91deg,#ffd600 0%,#ff8d3a 100%)",
                     }}
-                  />
+                    layout
+                    transition={{ duration: 0.28, ease: "easeInOut" }}
+                  >
+                    {/* Subtle shine effect */}
+                    <motion.div
+                      className="absolute left-0 top-0 w-1/2 h-full pointer-events-none z-10"
+                      initial={{ opacity: 0 }}
+                      animate={{
+                        opacity: [0, 0.18, 0],
+                        x: ["-55%", "120%"],
+                      }}
+                      transition={{
+                        repeat: Infinity,
+                        duration: 1.5,
+                        ease: "easeInOut",
+                        delay: 0.28,
+                      }}
+                      style={{
+                        background:
+                          "linear-gradient(120deg,rgba(255,255,255,0.0) 40%,rgba(255,255,255,0.16) 55%,rgba(255,255,255,0.0) 70%)",
+                        filter: "blur(8px)",
+                      }}
+                    />
 
-                  <div className="flex items-center justify-center h-[56px] sm:h-[68px] w-full min-w-[140px] max-w-[340px] m-auto select-none">
-                    <span className="font-extrabold text-neutral-900 text-2xl sm:text-3xl tracking-tight drop-shadow-[0_1px_8px_rgba(255,255,255,0.10)]">
-                      <Link to="token-sale">  BUY $TRW</Link>
-                    </span>
-                  </div>
-                </motion.div>
-              </motion.a>
-       </Link>
+                    <div className="flex items-center justify-center h-[56px] sm:h-[68px] w-full min-w-[140px] max-w-[340px] m-auto select-none">
+                      <span className="font-extrabold text-neutral-900 text-2xl sm:text-3xl tracking-tight drop-shadow-[0_1px_8px_rgba(255,255,255,0.10)]">
+                        <Link to="token-sale">  BUY $TRW</Link>
+                      </span>
+                    </div>
+                  </motion.div>
+                </motion.a>
+              </Link>
             </div>
           </motion.div>
         </motion.section>

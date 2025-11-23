@@ -30,9 +30,6 @@ const PreSale = () => {
 
   const [quickValue, setQuickValue] = useState<number>(5);
 
-  // Removed the effect that overwrote amount with quickValue on mount,
-  // so the input stays prefilled at 0.2 until the user moves the slider.
-
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setAmount(value);
@@ -113,6 +110,13 @@ const PreSale = () => {
     navigate("/waiting");
   };
 
+  const numericAmount = Number(amount);
+  const baseTokens = numericAmount * defaultRate;
+  const bonusPercentage = numericAmount >= 5 ? 0.35 : numericAmount >= 1 ? 0.1 : 0;
+  const bonusTokens = Math.floor(baseTokens * bonusPercentage);
+  const totalTokens = Math.floor(baseTokens * (1 + bonusPercentage));
+
+
   const benefits = [
     {
       icon: <Rocket className="h-6 w-6 text-purple-400" />,
@@ -144,11 +148,9 @@ const PreSale = () => {
     <div style={{ backgroundColor: "black" }} className="min-h-screen bg-gradient-to-br">
       {/* Header */}
 
-
-
-   <div className="max-w-[1236px] mx-auto flex flex-col items-center z-50 relative">
+      <div className="max-w-[1236px] mx-auto flex flex-col items-center z-50 relative">
         <motion.h3
-          className="uppercase  text-center  lg:text-[16px] mb-3 text-gradient"
+          className="uppercase text-center lg:text-[16px] mb-3 text-gradient"
 
         >
           🚀Buy $TRW
@@ -169,24 +171,24 @@ const PreSale = () => {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Bonus Tier Section */}
+        {/* Bonus Tier Section - Compacted Padding */}
         <div className="bg-gradient-to-br from-yellow-900/20 via-orange-900/20 to-gray-900/50 rounded-2xl shadow-2xl overflow-hidden border border-yellow-500/30 mb-8 backdrop-blur-sm">
           <div className="p-4 sm:p-6">
             {/* Mobile Layout */}
             <div className="block sm:hidden">
               <div className="flex items-start justify-between">
                 <div className="flex items-center space-x-3">
-                  <div className="p-2 rounded-lg bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border border-yellow-500/30">
-                    <Star className="h-5 w-5 text-yellow-400" fill="currentColor" />
+                  <div className="p-1.5 rounded-lg bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border border-yellow-500/30">
+                    <Star className="h-4 w-4 text-yellow-400" fill="currentColor" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-white">Bonus</h3>
+                    <h3 className="text-base font-bold text-white">Bonus</h3>
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-1">
                   <div
-                    className={`p-1.5 rounded-md ${
+                    className={`p-1 rounded-md ${
                       Number(amount) >= 5
                         ? "bg-purple-500/10 border border-purple-500/30"
                         : Number(amount) >= 1
@@ -195,7 +197,7 @@ const PreSale = () => {
                     }`}
                   >
                     <Zap
-                      className={`h-4 w-4 ${
+                      className={`h-3 w-3 ${
                         Number(amount) >= 5
                           ? "text-purple-400"
                           : Number(amount) >= 1
@@ -206,7 +208,7 @@ const PreSale = () => {
                     />
                   </div>
                   <span
-                    className={`text-base font-bold ${
+                    className={`text-sm font-bold ${
                       Number(amount) >= 5
                         ? "text-purple-400"
                         : Number(amount) >= 1
@@ -219,10 +221,10 @@ const PreSale = () => {
                 </div>
               </div>
 
-              <div className="mt-4">
-                <div className="flex items-center justify-between mb-2">
+              <div className="mt-3">
+                <div className="flex items-center justify-between mb-1">
                   <span
-                    className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full ${
+                    className={`text-[9px] font-medium px-1 py-0.5 rounded-full ${
                       Number(amount) >= 1
                         ? "bg-green-900/50 text-green-300 border border-green-500/30"
                         : "bg-gray-800/70 text-gray-500 border border-gray-700"
@@ -231,7 +233,7 @@ const PreSale = () => {
                     1 SOL = 10 %
                   </span>
                   <span
-                    className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full ${
+                    className={`text-[9px] font-medium px-1 py-0.5 rounded-full ${
                       Number(amount) >= 5
                         ? "bg-purple-900/50 text-purple-300 border border-purple-500/30"
                         : "bg-gray-800/70 text-gray-500 border border-gray-700"
@@ -241,7 +243,7 @@ const PreSale = () => {
                   </span>
                 </div>
 
-                <div className="relative h-2 bg-gray-800/70 rounded-full overflow-hidden">
+                <div className="relative h-1.5 bg-gray-800/70 rounded-full overflow-hidden">
                   <div
                     className={`absolute inset-0 rounded-full ${
                       Number(amount) >= 5 ? "bg-purple-500/20" : "bg-orange-500/20"
@@ -263,7 +265,7 @@ const PreSale = () => {
               </div>
             </div>
 
-            {/* Desktop Layout */}
+            {/* Desktop Layout - Kept mostly as is, but ensuring responsiveness is correct */}
             <div className="hidden sm:flex flex-col sm:flex-row items-center justify-between gap-6">
               <div className="flex items-center space-x-4">
                 <div className="p-2.5 rounded-lg bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border border-yellow-500/30">
@@ -338,31 +340,33 @@ const PreSale = () => {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
-          {/* Purchase Card */}
+          {/* Purchase Card - COMPACTED */}
           <div className="bg-gradient-to-br from-gray-900/80 to-gray-900/50 rounded-2xl shadow-2xl overflow-hidden border border-gray-800/50 backdrop-blur-sm">
-            <div className="p-6 border-b border-gray-800/50">
+            {/* Reduced p-6 to p-4 sm:p-6 */}
+            <div className="p-4 sm:p-6 border-b border-gray-800/50">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-2xl font-bold text-white mb-1">Purchase $TRW</h2>
+                  <h2 className="text-xl sm:text-2xl font-bold text-white mb-1">Purchase $TRW</h2>
                   <div className="flex items-center space-x-2">
-                    <span className="text-orange-300 text-sm">Presale Price:</span>
-                    <span className="text-white font-medium">1 SOL = {defaultRate.toLocaleString()} $TRW</span>
+                    <span className="text-orange-300 text-xs sm:text-sm">Presale Price:</span>
+                    <span className="text-white text-xs sm:text-sm font-medium">1 SOL = {defaultRate.toLocaleString()} $TRW</span>
                   </div>
                 </div>
                 <div className="p-2 rounded-lg">
-                  <Player autoplay loop src={icon_31} className="w-10 h-10" style={{ transform: "translateY(1px)" }} />
+                  <Player autoplay loop src={icon_31} className="w-8 h-8 sm:w-10 sm:h-10" style={{ transform: "translateY(1px)" }} />
                 </div>
               </div>
             </div>
 
-            <div className="p-6">
+            {/* Reduced p-6 to p-4 sm:p-6 */}
+            <div className="p-4 sm:p-6">
               {/* Input field for custom amount */}
-              <div className="mb-4">
+              <div className="mb-3 sm:mb-4">
                 <div className="flex items-center justify-between mb-2">
-                  <label className="block text-gray-300 text-sm font-medium">Amount in SOL</label>
-                  <div className="flex items-center space-x-1 bg-gray-800/50 px-2 py-1 rounded-md border border-gray-700/50">
+                  <label className="block text-gray-300 text-xs sm:text-sm font-medium">Amount in SOL</label>
+                  <div className="flex items-center space-x-1 bg-gray-800/50 px-2 py-0.5 sm:py-1 rounded-md border border-gray-700/50">
                     <Clock className="h-3 w-3 text-green-400" />
-                    <span className="text-xs text-green-400 font-medium">Last buy: 2 min ago</span>
+                    <span className="text-[10px] sm:text-xs text-green-400 font-medium">Last buy: 2 min ago</span>
                   </div>
                 </div>
 
@@ -381,33 +385,34 @@ const PreSale = () => {
                       border ${error ? "border-red-500/80" : "border-gray-700/50"}
                       rounded-t-xl
                       rounded-b-none
-                      py-3 px-4
+                      py-2.5 sm:py-3 px-4
                       text-white
+                      text-sm sm:text-base
                       focus:outline-none
                       focus:ring-2 focus:ring-orange-500/50 focus:border-transparent
                       transition-all
                       placeholder-gray-500
                     `}
                   />
-                  <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-orange-400 font-medium">SOL</span>
+                  <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-orange-400 text-sm font-medium">SOL</span>
                 </div>
 
-                {/* dynamic small timer */}
-                <div className="flex items-center space-x-2 px-3 py-1.5 rounded-b-lg border border-gray-700/50">
-                  <Clock className="h-4 w-4 text-orange-400" />
-                  <span className="text-sm text-gray-300 whitespace-nowrap">
+                {/* dynamic small timer - Compacted py-1.5 to py-1 and text-sm to text-xs on mobile */}
+                <div className="flex items-center space-x-2 px-3 py-1 rounded-b-lg border border-gray-700/50">
+                  <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-orange-400" />
+                  <span className="text-xs sm:text-sm text-gray-300 whitespace-nowrap">
                     Token sale Ends in:{" "}
                     <span className="font-medium text-white">
                       {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s
                     </span>
                   </span>
                 </div>
-                {error && <p className="mt-2 text-red-400 text-sm">{error}</p>}
+                {error && <p className="mt-1 text-red-400 text-xs">{error}</p>}
               </div>
 
-              {/* Slider for quick selection */}
-              <div style={{ marginTop: "8%" }} className="mt-4 mb-6">
-                <label htmlFor="quick-slider" className="block text-gray-400 text-sm font-medium mb-2">
+              {/* Slider for quick selection - Reduced vertical spacing */}
+              <div className="mt-3 mb-4 sm:mt-6 sm:mb-6">
+                <label htmlFor="quick-slider" className="block text-gray-400 text-xs sm:text-sm font-medium mb-1 sm:mb-2">
                   Quick select:
                 </label>
 
@@ -427,17 +432,20 @@ const PreSale = () => {
                   className="
                     w-full h-2
                     bg-gray-800/70 rounded-lg
-                    accent-orange-500 transition-all focus:outline-none
+                    accent-orange-500 transition-all focus:outline-none cursor-pointer
                   "
                 />
 
-                <div className="flex justify-between text-gray-500 text-xs mt-3">
+                <div className="flex justify-between text-gray-500 text-[10px] sm:text-xs mt-2">
                   {[5, 10, 15, 20].map((v) => (
-                    <div key={v} className="relative flex flex-col items-center">
+                    <div key={v} className="relative flex flex-col items-center cursor-pointer" onClick={() => {
+                        setQuickValue(v);
+                        setAmount(v.toString());
+                        setTokenAmount(calculateTokens(v.toString()));
+                    }}>
                       {v === 10 && (
                         <span
-                          style={{ marginTop: "100%" }}
-                          className="absolute -top-5 bg-green-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full z-10"
+                          className="absolute -top-4 sm:-top-5 bg-green-500 text-white text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded-full z-10"
                         >
                           Popular
                         </span>
@@ -448,88 +456,85 @@ const PreSale = () => {
                 </div>
               </div>
 
-              {/* Token Calculation */}
-              <div className="mt-6 lg:mt-8 bg-gray-800/30 rounded-xl p-4 mb-6 border border-gray-700/50 backdrop-blur-sm">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="bg-gray-800/40 p-4 rounded-lg border border-gray-700/50 hover:border-green-500/30 transition-colors">
+              {/* Token Calculation - FORCED TO GRID-COLS-2 on Mobile */}
+              <div className="mt-4 sm:mt-8 bg-gray-800/30 rounded-xl p-3 sm:p-4 mb-4 border border-gray-700/50 backdrop-blur-sm">
+                <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                  {/* Receive Box - Compacted padding and text size */}
+                  <div className="bg-gray-800/40 p-2 sm:p-4 rounded-lg border border-gray-700/50 hover:border-green-500/30 transition-colors">
                     <div className="flex flex-col items-center h-full justify-between">
-                      <span className="text-xs font-medium text-gray-400 mb-1">YOU RECEIVE</span>
+                      <span className="text-[10px] sm:text-xs font-medium text-gray-400 mb-1">YOU RECEIVE</span>
                       <div className="flex flex-col items-center">
                         <div className="flex items-center justify-center space-x-1">
-                          <span className="text-lg font-bold text-white">{tokenAmount}</span>
-                          <span className="text-base font-medium text-green-400">$TRW</span>
+                          <span className="text-sm sm:text-lg font-bold text-white truncate max-w-[80px] sm:max-w-none">{tokenAmount}</span>
+                          <span className="text-xs sm:text-base font-medium text-green-400">$TRW</span>
                         </div>
-                        <div className="mt-1 text-xs text-green-300/80">{defaultRate.toLocaleString()} $TRW per SOL</div>
+                        <div className="mt-1 text-[9px] sm:text-xs text-green-300/80 hidden sm:block">{defaultRate.toLocaleString()} $TRW per SOL</div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="bg-gray-800/40 p-4 rounded-lg border border-gray-700/50 hover:border-yellow-500/30 transition-colors">
+                  {/* Bonus Box - Compacted padding and text size */}
+                  <div className="bg-gray-800/40 p-2 sm:p-4 rounded-lg border border-gray-700/50 hover:border-yellow-500/30 transition-colors">
                     <div className="flex flex-col items-center h-full justify-between">
                       {/* Label + Tier */}
                       <div className="flex items-center space-x-1">
-                        <span className="text-xs font-medium text-gray-400">BONUS</span>
-                        {Number(amount) >= 1 && (
+                        <span className="text-[10px] sm:text-xs font-medium text-gray-400">BONUS</span>
+                        {numericAmount >= 1 && (
                           <span
-                            className={`text-xs px-2 py-0.5 rounded-full ${
-                              Number(amount) >= 5 ? "bg-purple-900/30 text-purple-300" : "bg-orange-900/30 text-orange-300"
+                            className={`text-[9px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full ${
+                              numericAmount >= 5 ? "bg-purple-900/30 text-purple-300" : "bg-orange-900/30 text-orange-300"
                             }`}
                           >
-                            {Number(amount) >= 5 ? "35%" : "10%"}
+                            {numericAmount >= 5 ? "35%" : "10%"}
                           </span>
                         )}
                       </div>
 
                       {/* Amount of bonus tokens */}
                       <div className="flex items_center justify-center space-x-1 mt-1">
-                        <span className="text-lg font-bold text-yellow-300">
-                          +
-                          {Math.floor(
-                            Number(tokenAmount.replace(/,/g, "")) * (Number(amount) >= 5 ? 0.35 : 0.1)
-                          ).toLocaleString()}
+                        <span className="text-sm sm:text-lg font-bold text-yellow-300 truncate max-w-[80px] sm:max-w-none">
+                          +{bonusTokens.toLocaleString("en-US")}
                         </span>
-                        <span className="text-base font-medium text-yellow-200">$TRW</span>
+                        <span className="text-xs sm:text-base font-medium text-yellow-200">$TRW</span>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Total */}
-              <div className="flex justify-between items-center py-4 px-5 bg-gray-800/30 rounded-xl mb-6 border border-gray-700/50">
+              {/* Total - Compacted padding and description text */}
+              <div className="flex justify-between items-center py-2 sm:py-4 px-3 sm:px-5 bg-gray-800/30 rounded-xl mb-4 border border-gray-700/50">
                 <div>
-                  <span className="text-gray-300 font-medium">Total Tokens</span>
-                  <p className="text-gray-500 text-sm">Including bonus</p>
+                  <span className="text-gray-300 font-medium text-sm sm:text-base">Total Tokens</span>
+                  <p className="text-gray-500 text-[10px] sm:text-sm">Including bonus</p>
                 </div>
-                <span className="text-white font-bold text-2xl">
-                  {Math.floor(
-                    Number(tokenAmount.replace(/,/g, "")) * (1 + (Number(amount) >= 5 ? 0.35 : Number(amount) >= 1 ? 0.1 : 0))
-                  ).toLocaleString()}{" "}
+                <span className="text-white font-bold text-lg sm:text-2xl">
+                  {totalTokens.toLocaleString("en-US")}{" "}
                   $TRW
                 </span>
               </div>
 
-              {/* Info Box */}
-              <div className="bg-[#111] p-3 sm:p-4 rounded-lg border border-[#f0b90b]/20 flex items-start mb-6">
-                <div className="text-[#f0b90b] mr-2 sm:mr-3 mt-0.5">
-                  <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5" />
+              {/* Info Box - Compacted padding and text size */}
+              <div className="bg-[#111] p-2 sm:p-4 rounded-lg border border-[#f0b90b]/20 flex items-start mb-4">
+                <div className="text-[#f0b90b] mr-2 mt-0.5">
+                  <AlertCircle className="w-3 h-3 sm:w-5 sm:h-5" />
                 </div>
-                <p className="text-gray-300 text-xs sm:text-sm">
+                <p className="text-gray-300 text-[10px] sm:text-xs leading-tight">
                   Tokens will be automatically distributed to your wallet immediately after payment confirmation. No manual claiming required.
                 </p>
               </div>
 
-              {/* Proceed Button */}
+              {/* Proceed Button - Compacted padding and margin */}
               <motion.button
                 onClick={handleProceedToPayment}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full bg-gradient-to-r from-orange-500 to-yellow-500 text-white font-bold py-3 px-4 rounded-xl hover:shadow-lg hover:shadow-orange-500/30 transition-all"
+                className="w-full bg-gradient-to-r from-orange-500 to-yellow-500 text-white font-bold py-2.5 sm:py-3 px-4 rounded-xl text-sm sm:text-base hover:shadow-lg hover:shadow-orange-500/30 transition-all"
               >
                 Proceed to Payment
               </motion.button>
 
-              <p className="text-gray-500 text-xs mt-4 text-center">
+              <p className="text-gray-500 text-[10px] sm:text-xs mt-3 text-center">
                 By proceeding, you agree to our{" "}
                 <a href="#" className="text-orange-400 hover:underline">
                   Terms & Conditions
@@ -538,15 +543,14 @@ const PreSale = () => {
             </div>
           </div>
 
-          {/* Benefits Section */}
+          {/* Benefits Section - Compacted */}
           <div className="space-y-6">
-            {/* Mobile-only Roadmap Section */}
+            {/* Mobile-only Roadmap Section - Adjusted for smaller elements */}
             <div className="lg:hidden max-w-[1236px] mx-auto flex flex-col items-center z-50 relative">
               <div className="flex flex-col items-center">
                 <div className="flex items-center justify-center">
-                  {/* 3D Icon added here */}
-                  <Player autoplay loop src={icon_31} className="w-10 h-10 mr-3 sm:mr-4" style={{ marginTop: "-115%", marginLeft: "-29%" }} />
-                  <motion.h2 className="mb-2 text-center capitalize switzer tracking-[-1px] lg:tracking-[-3px] text-3xl sm:text-4xl md:text-[44px] lg:text-[55px]">
+                  <Player autoplay loop src={icon_31} className="w-8 h-8 mr-2 sm:mr-4" style={{ marginTop: "-115%", marginLeft: "-29%" }} />
+                  <motion.h2 className="mb-2 text-center capitalize switzer tracking-[-1px] lg:tracking-[-3px] text-2xl sm:text-3xl md:text-[44px] lg:text-[55px]">
                     <span className="texture-text flex flex-col sm:block">
                       <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">$TRW Launche</span>
                       <span className="sm:inline-block mt-1 sm:mt-0 sm:ml-2"></span>
@@ -554,7 +558,7 @@ const PreSale = () => {
                   </motion.h2>
                 </div>
 
-                <motion.h3 className="uppercase text-center lg:text-[16px] mb-3 text-gradient leading-tight sm:leading-normal mt-2 sm:mt-0">
+                <motion.h3 className="uppercase text-center text-xs sm:text-sm lg:text-[16px] mb-3 text-gradient leading-tight sm:leading-normal mt-2 sm:mt-0">
                   <span className="inline-block">
                     Real opportunities don't wait. $TRW enters the market at just $0.25,<br className="hidden sm:block" />
                     your chance to escape the matrix now!
@@ -563,27 +567,27 @@ const PreSale = () => {
               </div>
             </div>
 
-            {/* Benefits Card */}
+            {/* Benefits Card - Compacted Padding and Text Size */}
             <div className="bg-gradient-to-br from-gray-900/80 to-gray-900/50 rounded-2xl shadow-xl overflow-hidden border border-gray-800/50 backdrop-blur-sm">
-              <div className="p-6 border-b border-gray-800/50">
-                <h3 className="text-xl font-bold text-white mb-2">Presale Benefits</h3>
-                <p className="text-gray-400 text-sm">Why participate in our token presale</p>
+              <div className="p-4 sm:p-6 border-b border-gray-800/50">
+                <h3 className="text-lg sm:text-xl font-bold text-white mb-1">Presale Benefits</h3>
+                <p className="text-gray-400 text-xs sm:text-sm">Why participate in our token presale</p>
               </div>
-              <div className="p-6">
-                <div className="grid sm:grid-cols-2 gap-4">
+              <div className="p-4 sm:p-6">
+                <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
                   {benefits.map((benefit, index) => (
                     <motion.div
                       key={index}
                       whileHover={{ y: -3 }}
-                      className={`p-4 rounded-lg border ${benefit.bgColor} border-gray-700/50 hover:border-orange-500/30 transition-all`}
+                      className={`p-3 sm:p-4 rounded-lg border ${benefit.bgColor} border-gray-700/50 hover:border-orange-500/30 transition-all`}
                     >
                       <div className="flex items-start space-x-3">
-                        <div className={`p-2 rounded-md ${benefit.bgColor}`}>{benefit.icon}</div>
+                        <div className={`p-1.5 sm:p-2 rounded-md ${benefit.bgColor}`}>{benefit.icon}</div>
                         <div>
-                          <h4 style={{ fontSize: "1.5rem" }} className="text-white font-medium">
+                          <h4 className="text-sm sm:text-lg font-bold text-white">
                             {benefit.title}
                           </h4>
-                          <p className="text-gray-400 text-sm mt-1">{benefit.description}</p>
+                          <p className="text-gray-400 text-xs sm:text-sm mt-0.5">{benefit.description}</p>
                         </div>
                       </div>
                     </motion.div>

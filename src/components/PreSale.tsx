@@ -54,7 +54,6 @@ const PreSale = () => {
   });
 
   useEffect(() => {
-    // Current time is 2025-11-20T03:50:27Z. Setting end date in the future for testing.
     const SALE_END_DATE = new Date("2026-01-05T23:59:59Z");
     const tick = () => {
       const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'UTC' }));
@@ -89,8 +88,6 @@ const PreSale = () => {
     const bonusPercentage = solValue >= 5 ? 0.35 : solValue >= 1 ? 0.1 : 0;
     const bonusTokens = Math.floor(baseTokens * bonusPercentage);
     const totalTokens = baseTokens + bonusTokens;
-
-    // Optional: generate an order id here (so waiting.tsx can show it if it reads from storage)
     const orderId = `#${Math.floor(10000 + Math.random() * 90000)}`;
 
     const details = {
@@ -98,13 +95,10 @@ const PreSale = () => {
       baseTokenAmount: baseTokens.toLocaleString("en-US"),
       bonusTokenAmount: bonusTokens.toLocaleString("en-US"),
       totalTokenAmount: totalTokens.toLocaleString("en-US"),
-      orderId, // optional but useful
+      orderId,
     };
 
-    // ✅ Persist so waiting.tsx can read it (and it survives refresh)
     sessionStorage.setItem("paymentDetails", JSON.stringify(details));
-
-    // ✅ Also pass via router state
     navigate("/waiting", { state: details });
   };
 
@@ -115,20 +109,20 @@ const PreSale = () => {
   const totalTokens = baseTokensNum + bonusTokens;
 
   const benefits = [
-    { icon: <Rocket className="h-6 w-6 text-purple-400" />, title: "Early Access", description: "Get in early with pre-launch pricing before exchange listing", bgColor: "bg-purple-500/10" },
-    { icon: <Star className="h-6 w-6 text-yellow-400" />, title: "35% Bonus", description: "Purchase 5+ SOL to receive 35% bonus tokens", bgColor: "bg-yellow-500/10" },
-    { icon: <Clock className="h-6 w-6 text-orange-400" />, title: "10% Bonus", description: "Purchase 1+ SOL to receive 10% bonus tokens", bgColor: "bg-orange-500/10" },
-    { icon: <ShoppingCart className="h-6 w-6 text-green-400" />, title: "Limited Supply", description: "Only 40% of total supply available during presale", bgColor: "bg-green-500/10" },
+    { icon: <Rocket className="h-5 w-5 sm:h-6 sm:w-6 text-purple-400" />, title: "Early Access", description: "Get in early with pre-launch pricing", bgColor: "bg-purple-500/10" },
+    { icon: <Star className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-400" />, title: "35% Bonus", description: "Purchase 5+ SOL to receive 35% bonus", bgColor: "bg-yellow-500/10" },
+    { icon: <Clock className="h-5 w-5 sm:h-6 sm:w-6 text-orange-400" />, title: "10% Bonus", description: "Purchase 1+ SOL to receive 10% bonus", bgColor: "bg-orange-500/10" },
+    { icon: <ShoppingCart className="h-5 w-5 sm:h-6 sm:w-6 text-green-400" />, title: "Limited Supply", description: "Only 40% available during presale", bgColor: "bg-green-500/10" },
   ];
 
   return (
     <div style={{ backgroundColor: "black" }} className="min-h-screen bg-gradient-to-br">
       <header className="sticky top-0 z-10 bg-black/90 backdrop-blur-md border-b border-gray-800/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
           <div className="flex items-center justify-between">
             <Link to="/" className="flex items-center space-x-2">
               <ArrowLeft className="h-5 w-5 text-gray-400 hover:text-white transition-colors" />
-              <span className="text-white font-medium">Back</span>
+              <span className="text-white font-medium text-sm sm:text-base">Back</span>
             </Link>
             <div className="flex items-center space-x-4">
               <div className="hidden sm:flex items-center space-x-2 bg-gray-800/50 px-3 py-2 rounded-lg border border-gray-700">
@@ -140,36 +134,35 @@ const PreSale = () => {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
-        {/* The previous Bonus Tiers box was here. It has been moved into the grid below. */}
-
-        <div className="grid lg:grid-cols-2 gap-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+        <div className="grid lg:grid-cols-2 gap-4 sm:gap-8">
+          
           {/* Purchase Card (Column 1) */}
           <div className="bg-gradient-to-br from-gray-900/80 to-gray-900/50 rounded-2xl shadow-2xl overflow-hidden border border-gray-800/50 backdrop-blur-sm">
-            <div className="p-6 border-b border-gray-800/50">
+            {/* Reduced padding from p-6 to p-4 on mobile */}
+            <div className="p-4 sm:p-6 border-b border-gray-800/50">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-2xl font-bold text-white mb-1">Purchase $TRW</h2>
+                  <h2 className="text-xl sm:text-2xl font-bold text-white mb-1">Purchase $TRW</h2>
                   <div className="flex items-center space-x-2">
-                    <span className="text-orange-300 text-sm">Presale Price:</span>
-                    <span className="text-white font-medium">1 SOL = {defaultRate.toLocaleString()} $TRW</span>
+                    <span className="text-orange-300 text-xs sm:text-sm">Presale Price:</span>
+                    <span className="text-white text-xs sm:text-sm font-medium">1 SOL = {defaultRate.toLocaleString()} $TRW</span>
                   </div>
                 </div>
                 <div className="p-2 rounded-lg">
-                  <Player autoplay loop src={icon_31} className="w-10 h-10" style={{ transform: "translateY(1px)" }} />
+                  <Player autoplay loop src={icon_31} className="w-8 h-8 sm:w-10 sm:h-10" style={{ transform: "translateY(1px)" }} />
                 </div>
               </div>
             </div>
 
-            <div className="p-6">
-              {/* Input */}
-              <div className="mb-4">
+            <div className="p-4 sm:p-6">
+              {/* Input Section */}
+              <div className="mb-3 sm:mb-4">
                 <div className="flex items-center justify-between mb-2">
-                  <label className="block text-gray-300 text-sm font-medium">Amount in SOL</label>
-                  <div className="flex items-center space-x-1 bg-gray-800/50 px-2 py-1 rounded-md border border-gray-700/50">
+                  <label className="block text-gray-300 text-xs sm:text-sm font-medium">Amount in SOL</label>
+                  <div className="flex items-center space-x-1 bg-gray-800/50 px-2 py-0.5 sm:py-1 rounded-md border border-gray-700/50">
                     <Clock className="h-3 w-3 text-green-400" />
-                    <span className="text-xs text-green-400 font-medium">Last buy: 2 min ago</span>
+                    <span className="text-[10px] sm:text-xs text-green-400 font-medium">Last buy: 2 min ago</span>
                   </div>
                 </div>
 
@@ -182,26 +175,30 @@ const PreSale = () => {
                     onChange={handleAmountChange}
                     onBlur={handleBlur}
                     placeholder="Enter amount"
-                    className={`w-full bg-gray-800/70 border ${error ? "border-red-500/80" : "border-gray-700/50"} rounded-t-xl rounded-b-none py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-transparent transition-all placeholder-gray-500`}
+                    // Reduced py-3 to py-2.5 on mobile
+                    className={`w-full bg-gray-800/70 border ${error ? "border-red-500/80" : "border-gray-700/50"} rounded-t-xl rounded-b-none py-2.5 sm:py-3 px-4 text-white text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-transparent transition-all placeholder-gray-500`}
                   />
-                  <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-orange-400 font-medium">SOL</span>
+                  <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-orange-400 text-sm font-medium">SOL</span>
                 </div>
 
-                <div className="flex items-center space-x-2 px-3 py-1.5 rounded-b-lg border border-gray-700/50">
-                  <Clock className="h-4 w-4 text-orange-400" />
-                  <span className="text-sm text-gray-300 whitespace-nowrap">
-                    Token sale Ends in:{" "}
+                <div className="flex items-center space-x-2 px-3 py-1 sm:py-1.5 rounded-b-lg border border-gray-700/50">
+                  <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-orange-400" />
+                  <span className="text-xs sm:text-sm text-gray-300 whitespace-nowrap">
+                    Ends in:{" "}
                     <span className="font-medium text-white">
-                      {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s
+                      {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m
                     </span>
                   </span>
                 </div>
-                {error && <p className="mt-2 text-red-400 text-sm">{error}</p>}
+                {error && <p className="mt-1 text-red-400 text-xs">{error}</p>}
               </div>
 
-              {/* Slider */}
-              <div style={{ marginTop: "8%" }} className="mt-4 mb-6">
-                <label htmlFor="quick-slider" className="block text-gray-400 text-sm font-medium mb-2">Quick select:</label>
+              {/* Slider - Reduced vertical spacing drastically */}
+              <div className="mt-3 mb-4 sm:mt-6 sm:mb-6">
+                <div className="flex justify-between items-center mb-1">
+                   <label htmlFor="quick-slider" className="block text-gray-400 text-xs font-medium">Quick select</label>
+                </div>
+                
                 <input
                   id="quick-slider"
                   type="range"
@@ -216,13 +213,17 @@ const PreSale = () => {
                     setAmount(str);
                     setTokenAmount(calculateTokens(str));
                   }}
-                  className="w-full h-2 bg-gray-800/70 rounded-lg accent-orange-500 transition-all focus:outline-none"
+                  className="w-full h-2 bg-gray-800/70 rounded-lg accent-orange-500 transition-all focus:outline-none cursor-pointer"
                 />
-                <div className="flex justify-between text-gray-500 text-xs mt-3">
+                <div className="flex justify-between text-gray-500 text-[10px] sm:text-xs mt-2">
                   {[5, 10, 15, 20].map((v) => (
-                    <div key={v} className="relative flex flex-col items-center">
+                    <div key={v} className="relative flex flex-col items-center cursor-pointer" onClick={() => {
+                        setQuickValue(v);
+                        setAmount(v.toString());
+                        setTokenAmount(calculateTokens(v.toString()));
+                    }}>
                       {v === 10 && (
-                        <span style={{ marginTop: "100%" }} className="absolute -top-5 bg-green-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full z-10">
+                        <span className="absolute -top-4 sm:-top-5 bg-green-500 text-white text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded-full z-10">
                           Popular
                         </span>
                       )}
@@ -232,62 +233,65 @@ const PreSale = () => {
                 </div>
               </div>
 
-              {/* Token Calculation */}
-              <div className="mt-6 lg:mt-8 bg-gray-800/30 rounded-xl p-4 mb-6 border border-gray-700/50 backdrop-blur-sm">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="bg-gray-800/40 p-4 rounded-lg border border-gray-700/50 hover:border-green-500/30 transition-colors">
+              {/* Token Calculation - CHANGED TO GRID-COLS-2 on Mobile to save vertical space */}
+              <div className="mt-4 sm:mt-8 bg-gray-800/30 rounded-xl p-3 sm:p-4 mb-4 border border-gray-700/50 backdrop-blur-sm">
+                <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                  
+                  {/* Receive Box */}
+                  <div className="bg-gray-800/40 p-2 sm:p-4 rounded-lg border border-gray-700/50 hover:border-green-500/30 transition-colors">
                     <div className="flex flex-col items-center h-full justify-between">
-                      <span className="text-xs font-medium text-gray-400 mb-1">YOU RECEIVE</span>
+                      <span className="text-[10px] sm:text-xs font-medium text-gray-400 mb-1">YOU RECEIVE</span>
                       <div className="flex flex-col items-center">
                         <div className="flex items-center justify-center space-x-1">
-                          <span className="text-lg font-bold text-white">{tokenAmount}</span>
-                          <span className="text-base font-medium text-green-400">$TRW</span>
+                          <span className="text-sm sm:text-lg font-bold text-white truncate max-w-[80px] sm:max-w-none">{tokenAmount}</span>
+                          <span className="text-xs sm:text-base font-medium text-green-400">$TRW</span>
                         </div>
-                        <div className="mt-1 text-xs text-green-300/80">{defaultRate.toLocaleString()} $TRW per SOL</div>
+                        <div className="mt-1 text-[9px] sm:text-xs text-green-300/80 hidden sm:block">Per SOL Rate active</div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="bg-gray-800/40 p-4 rounded-lg border border-gray-700/50 hover:border-yellow-500/30 transition-colors">
+                  {/* Bonus Box */}
+                  <div className="bg-gray-800/40 p-2 sm:p-4 rounded-lg border border-gray-700/50 hover:border-yellow-500/30 transition-colors">
                     <div className="flex flex-col items-center h-full justify-between">
                       <div className="flex items-center space-x-1">
-                        <span className="text-xs font-medium text-gray-400">BONUS</span>
+                        <span className="text-[10px] sm:text-xs font-medium text-gray-400">BONUS</span>
                         {numericAmount >= 1 && (
-                          <span className={`text-xs px-2 py-0.5 rounded-full ${numericAmount >= 5 ? "bg-purple-900/30 text-purple-300" : "bg-orange-900/30 text-orange-300"}`}>
+                          <span className={`text-[9px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full ${numericAmount >= 5 ? "bg-purple-900/30 text-purple-300" : "bg-orange-900/30 text-orange-300"}`}>
                             {numericAmount >= 5 ? "35%" : "10%"}
                           </span>
                         )}
                       </div>
 
-                      <div className="flex items_center justify-center space-x-1 mt-1">
-                        <span className="text-lg font-bold text-yellow-300">
+                      <div className="flex items-center justify-center space-x-1 mt-1">
+                        <span className="text-sm sm:text-lg font-bold text-yellow-300 truncate max-w-[80px] sm:max-w-none">
                           +{numericAmount >= 1 ? bonusTokens.toLocaleString("en-US") : "0"}
                         </span>
-                        <span className="text-base font-medium text-yellow-200">$TRW</span>
+                        <span className="text-xs sm:text-base font-medium text-yellow-200">$TRW</span>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Total */}
-              <div className="flex justify-between items-center py-4 px-5 bg-gray-800/30 rounded-xl mb-6 border border-gray-700/50">
+              {/* Total - Compacted */}
+              <div className="flex justify-between items-center py-2 sm:py-4 px-3 sm:px-5 bg-gray-800/30 rounded-xl mb-4 border border-gray-700/50">
                 <div>
-                  <span className="text-gray-300 font-medium">Total Tokens</span>
-                  <p className="text-gray-500 text-sm">Including bonus</p>
+                  <span className="text-gray-300 font-medium text-sm sm:text-base">Total</span>
+                  <p className="text-gray-500 text-[10px] sm:text-sm">Including bonus</p>
                 </div>
-                <span className="text-white font-bold text-2xl">
-                  {totalTokens.toLocaleString("en-US")} $TRW
+                <span className="text-white font-bold text-lg sm:text-2xl">
+                  {totalTokens.toLocaleString("en-US")}
                 </span>
               </div>
 
               {/* Info Box */}
-              <div className="bg-[#111] p-3 sm:p-4 rounded-lg border border-[#f0b90b]/20 flex items-start mb-6">
-                <div className="text-[#f0b90b] mr-2 sm:mr-3 mt-0.5">
-                  <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5" />
+              <div className="bg-[#111] p-2 sm:p-4 rounded-lg border border-[#f0b90b]/20 flex items-start mb-4">
+                <div className="text-[#f0b90b] mr-2 mt-0.5">
+                  <AlertCircle className="w-3 h-3 sm:w-5 sm:h-5" />
                 </div>
-                <p className="text-gray-300 text-xs sm:text-sm">
-                  Tokens will be automatically distributed to your wallet immediately after payment confirmation. No manual claiming required.
+                <p className="text-gray-300 text-[10px] sm:text-xs leading-tight">
+                  Tokens distributed automatically after payment.
                 </p>
               </div>
 
@@ -296,52 +300,33 @@ const PreSale = () => {
                 onClick={handleProceedToPayment}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full bg-gradient-to-r from-orange-500 to-yellow-500 text-white font-bold py-3 px-4 rounded-xl hover:shadow-lg hover:shadow-orange-500/30 transition-all"
+                className="w-full bg-gradient-to-r from-orange-500 to-yellow-500 text-white font-bold py-2.5 sm:py-3 px-4 rounded-xl text-sm sm:text-base hover:shadow-lg hover:shadow-orange-500/30 transition-all"
               >
                 Proceed to Payment
               </motion.button>
 
-              <p className="text-gray-500 text-xs mt-4 text-center">
+              <p className="text-gray-500 text-[10px] sm:text-xs mt-3 text-center">
                 By proceeding, you agree to our{" "}
-                <a href="#" className="text-orange-400 hover:underline">Terms & Conditions</a>
+                <a href="#" className="text-orange-400 hover:underline">Terms</a>
               </p>
             </div>
           </div>
 
-          {/* Benefits Section (Column 2) */}
-          <div className="space-y-6">
-            {/* 🚀 NEW LOCATION FOR BONUS PROGRESS BOX 🚀 */}
+          {/* Benefits Section (Column 2) - Kept mostly same but touch responsive adjustments */}
+          <div className="space-y-4 sm:space-y-6">
+            
+            {/* Bonus Progress Box */}
             <div className="bg-gradient-to-br from-yellow-900/20 via-orange-900/20 to-gray-900/50 rounded-2xl shadow-2xl overflow-hidden border border-yellow-500/30 backdrop-blur-sm">
               <div className="p-4 sm:p-6">
-                {/* Mobile Layout */}
+                {/* Compact Mobile Layout for Progress */}
                 <div className="block sm:hidden">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className="p-2 rounded-lg bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border border-yellow-500/30">
-                        <Star className="h-5 w-5 text-yellow-400" fill="currentColor" />
-                      </div>
-                      <div>
-                        <h3 className="text-lg font-bold text-white">Bonus</h3>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center space-x-2">
-                      <div className={`p-1.5 rounded-md ${numericAmount >= 5 ? "bg-purple-500/10 border border-purple-500/30" : numericAmount >= 1 ? "bg-orange-500/10 border border-orange-500/30" : "bg-gray-800/70 border border-gray-700"}`}>
-                        <Zap className={`h-4 w-4 ${numericAmount >= 5 ? "text-purple-400" : numericAmount >= 1 ? "text-orange-400" : "text-gray-500"}`} fill="currentColor" />
-                      </div>
-                      <span className={`text-base font-bold ${numericAmount >= 5 ? "text-purple-400" : numericAmount >= 1 ? "text-orange-400" : "text-gray-500"}`}>
-                        {numericAmount >= 5 ? "35%" : numericAmount >= 1 ? "10%" : "0%"}
-                      </span>
-                    </div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-white font-bold text-sm">Bonus Progress</span>
+                    <span className={`text-xs font-bold ${numericAmount >= 5 ? "text-purple-400" : numericAmount >= 1 ? "text-orange-400" : "text-gray-500"}`}>
+                       Current: {numericAmount >= 5 ? "35%" : numericAmount >= 1 ? "10%" : "0%"}
+                    </span>
                   </div>
-
-                  <div className="mt-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full ${numericAmount >= 1 ? "bg-green-900/50 text-green-300 border border-green-500/30" : "bg-gray-800/70 text-gray-500 border border-gray-700"}`}>1 SOL = 10 %</span>
-                      <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full ${numericAmount >= 5 ? "bg-purple-900/50 text-purple-300 border border-purple-500/30" : "bg-gray-800/70 text-gray-500 border border-gray-700"}`}>5 SOL = 35 %</span>
-                    </div>
-
-                    <div className="relative h-2 bg-gray-800/70 rounded-full overflow-hidden">
+                   <div className="relative h-2 bg-gray-800/70 rounded-full overflow-hidden mb-2">
                       <div className={`absolute inset-0 rounded-full ${numericAmount >= 5 ? "bg-purple-500/20" : "bg-orange-500/20"} blur-sm`} />
                       <motion.div
                         className="absolute inset-y-0 left-0 rounded-full"
@@ -355,11 +340,17 @@ const PreSale = () => {
                         transition={{ duration: 0.5 }}
                       />
                     </div>
-                  </div>
+                     <div className="flex justify-between text-[10px] text-gray-500">
+                        <span>0%</span>
+                        <span className={numericAmount >= 1 ? "text-green-400" : ""}>10% (1 SOL)</span>
+                        <span className={numericAmount >= 5 ? "text-purple-400" : ""}>35% (5 SOL)</span>
+                     </div>
                 </div>
 
-                {/* Desktop Layout */}
-                <div className="hidden sm:flex flex-col sm:flex-row items-center justify-between gap-6">
+                {/* Desktop Layout (Original) */}
+                <div className="hidden sm:block">
+                    {/* ... (Kept original complex layout for desktop only) ... */}
+                    <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
                   <div className="flex items-center space-x-4">
                     <div className="p-2.5 rounded-lg bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border border-yellow-500/30">
                       <Star className="h-6 w-6 text-yellow-400" fill="currentColor" />
@@ -369,7 +360,7 @@ const PreSale = () => {
                         Bonus <span className="mobile-view-result">{numericAmount >= 5 ? "35%" : numericAmount >= 1 ? "10%" : "0%"}</span>{" "}
                         <span className="bonus-main-heading">Tiers</span>
                       </h3>
-                      <p className="text-yellow-200/80 text-sm bonus-sub-heading">Unlock higher rewards with larger purchases</p>
+                      <p className="text-yellow-200/80 text-sm bonus-sub-heading">Unlock higher rewards</p>
                     </div>
                   </div>
 
@@ -394,66 +385,31 @@ const PreSale = () => {
                       />
                     </div>
                   </div>
-
-                  <div className="flex items-center space-x-3">
-                    <div className={`p-2 rounded-lg ${numericAmount >= 5 ? "bg-purple-500/10 border icon-bonus border-purple-500/30" : numericAmount >= 1 ? "bg-orange-500/10 border border-orange-500/30" : "bg-gray-800/70 border border-gray-700"}`}>
-                      <Zap className={`h-5 w-5 ${numericAmount >= 5 ? "text-purple-400 icon-bonus" : numericAmount >= 1 ? "text-orange-400" : "text-gray-500"}`} fill="currentColor" />
-                    </div>
-                    <div className="your-bonus">
-                      <p className="text-xs text-gray-400">Your Bonus</p>
-                      <p className={`text-lg font-bold ${numericAmount >= 5 ? "text-purple-400" : numericAmount >= 1 ? "text-orange-400" : "text-gray-500"}`}>
-                        {numericAmount >= 5 ? "35%" : numericAmount >= 1 ? "10%" : "0%"}
-                      </p>
-                    </div>
-                  </div>
+                </div>
                 </div>
               </div>
             </div>
-            {/* 🚀 END OF BONUS PROGRESS BOX 🚀 */}
 
-            {/* Mobile-only Roadmap Section */}
-            <div className="lg:hidden max-w-[1236px] mx-auto flex flex-col items-center z-50 relative">
-              <div className="flex flex-col items-center">
-                <div className="flex items-center justify-center">
-                  <Player autoplay loop src={icon_31} className="w-10 h-10 mr-3 sm:mr-4" style={{ marginTop: "-115%", marginLeft: "-29%" }} />
-                  <motion.h2 className="mb-2 text-center capitalize switzer tracking-[-1px] lg:tracking-[-3px] text-3xl sm:text-4xl md:text-[44px] lg:text-[55px]">
-                    <span className="texture-text flex flex-col sm:block">
-                      <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">$TRW Launche</span>
-                      <span className="sm:inline-block mt-1 sm:mt-0 sm:ml-2"> is Live</span>
-                    </span>
-                  </motion.h2>
-                </div>
-
-                <motion.h3 className="uppercase text-center lg:text-[16px] mb-3 text-gradient leading-tight sm:leading-normal mt-2 sm:mt-0">
-                  <span className="inline-block">
-                    Real opportunities don't wait. $TRW enters the market at just $0.25,<br className="hidden sm:block" />
-                    your chance to escape the matrix now!
-                  </span>
-                </motion.h3>
-              </div>
-            </div>
-
-            {/* Benefits Card */}
+            {/* Benefits Card - Compacted */}
             <div className="bg-gradient-to-br from-gray-900/80 to-gray-900/50 rounded-2xl shadow-xl overflow-hidden border border-gray-800/50 backdrop-blur-sm">
-              <div className="p-6 border-b border-gray-800/50">
-                <h3 className="text-xl font-bold text-white mb-2">Presale Benefits</h3>
-                <p className="text-gray-400 text-sm">Why participate in our token presale</p>
+              <div className="p-4 sm:p-6 border-b border-gray-800/50">
+                <h3 className="text-lg sm:text-xl font-bold text-white mb-1">Presale Benefits</h3>
               </div>
-              <div className="p-6">
-                <div className="grid sm:grid-cols-2 gap-4">
+              <div className="p-4 sm:p-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   {benefits.map((benefit, index) => (
                     <motion.div
                       key={index}
                       whileHover={{ y: -3 }}
-                      className={`p-4 rounded-lg border ${benefit.bgColor} border-gray-700/50 hover:border-orange-500/30 transition-all`}
+                      className={`p-3 sm:p-4 rounded-lg border ${benefit.bgColor} border-gray-700/50 hover:border-orange-500/30 transition-all`}
                     >
                       <div className="flex items-start space-x-3">
-                        <div className={`p-2 rounded-md ${benefit.bgColor}`}>{benefit.icon}</div>
+                        <div className={`p-1.5 sm:p-2 rounded-md ${benefit.bgColor}`}>{benefit.icon}</div>
                         <div>
-                          <h4 style={{ fontSize: "1.5rem" }} className="text-white font-medium">
+                          <h4 className="text-sm sm:text-lg font-bold text-white">
                             {benefit.title}
                           </h4>
-                          <p className="text-gray-400 text-sm mt-1">{benefit.description}</p>
+                          <p className="text-gray-400 text-xs sm:text-sm mt-0.5">{benefit.description}</p>
                         </div>
                       </div>
                     </motion.div>
@@ -461,8 +417,6 @@ const PreSale = () => {
                 </div>
               </div>
             </div>
-
-            <div className="bg-gradient-to-br from-gray-900/80 to-gray-900/50 rounded-2xl shadow-xl overflow-hidden border border-gray-800/50 backdrop-blur-sm" />
           </div>
         </div>
       </main>
