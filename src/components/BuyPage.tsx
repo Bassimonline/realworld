@@ -548,15 +548,7 @@ const PreSale = () => {
             {/* Mobile-only Roadmap Section - Adjusted for smaller elements */}
             <div className="lg:hidden max-w-[1236px] mx-auto flex flex-col items-center z-50 relative">
               <div className="flex flex-col items-center">
-                <div className="flex items-center justify-center">
-                  <Player autoplay loop src={icon_31} className="w-8 h-8 mr-2 sm:mr-4" style={{ marginTop: "-115%", marginLeft: "-29%" }} />
-                  <motion.h2 className="mb-2 text-center capitalize switzer tracking-[-1px] lg:tracking-[-3px] text-2xl sm:text-3xl md:text-[44px] lg:text-[55px]">
-                    <span className="texture-text flex flex-col sm:block">
-                      <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">$TRW Launche</span>
-                      <span className="sm:inline-block mt-1 sm:mt-0 sm:ml-2"></span>
-                    </span>
-                  </motion.h2>
-                </div>
+
 
                 <motion.h3 className="uppercase text-center text-xs sm:text-sm lg:text-[16px] mb-3 text-gradient leading-tight sm:leading-normal mt-2 sm:mt-0">
                   <span className="inline-block">
