@@ -137,7 +137,7 @@ const Header = () => {
 
           {/* X.com Icon (Mobile) */}
           <a
-            href="https://x.com/trwsol2?s=21"
+            href="https://x.com/trwofficialcoin?s=21"
             target="_blank"
             rel="noopener noreferrer"
             className="w-9 h-9 rounded-full bg-black flex items-center justify-center hover:bg-[#111] transition-colors duration-300 border border-white/20"
