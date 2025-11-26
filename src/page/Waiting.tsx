@@ -342,21 +342,7 @@ const StepTwoTransfer = ({ details, onNext }: { details: any, onNext: () => void
 
 
 
-                    {/* Warning */}
-
-                    <div className="flex gap-3 p-3 bg-red-500/5 border border-red-500/10 rounded-lg">
-
-                        <AlertCircle className="text-red-500 shrink-0" size={18} />
-
-                        <p className="text-red-500/80 text-xs leading-relaxed">
-
-                            **CRITICAL:** Only send the **EXACT** amount of **{solAmountDisplay} SOL** via the Solana network. Sending any other asset or incorrect amount may result in permanent loss.
-
-                        </p>
-
-                    </div>
-
-
+                
 
                     <button
 
