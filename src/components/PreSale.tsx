@@ -55,7 +55,7 @@ const PreSale = () => {
 
   useEffect(() => {
     // Note: The date is set far in the future (Jan 5, 2026) in the original code.
-    const SALE_END_DATE = new Date("2025-12-16T23:59:59Z"); 
+    const SALE_END_DATE = new Date("2025-12-16T22:59:59Z"); 
     const tick = () => {
       // Create a UTC time object for consistent calculation
       const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'UTC' }));
