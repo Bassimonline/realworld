@@ -14,7 +14,8 @@ import {
   ShieldCheck,
   ArrowRight,
   AlertCircle,
-  Clipboard
+  Clipboard,
+  ListOrdered
 } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 
@@ -59,10 +60,73 @@ const StepDot = ({ current, stepNum }: { current: number, stepNum: number }) => 
   </div>
 )
 
+/**
+ * Reusable component for copying text
+ */
+const CopyField = ({ label, textToCopy, displayValue, fieldName, copiedField, setCopiedField }: { 
+    label: string, 
+    textToCopy: string, 
+    displayValue: string, 
+    fieldName: string, 
+    copiedField: string | null, 
+    setCopiedField: (field: string | null) => void 
+}) => {
+    const copyToClipboard = () => {
+        navigator.clipboard.writeText(textToCopy)
+        setCopiedField(fieldName)
+        setTimeout(() => setCopiedField(null), 2000)
+    }
+
+    return (
+        <div className="space-y-1">
+            <label className="text-gray-400 text-xs font-bold uppercase ml-1">{label}</label>
+            <div className="flex items-center justify-between bg-black/40 border border-white/10 rounded-lg p-3 group">
+                <div className="overflow-hidden mr-4">
+                    <div className="text-gray-300 font-mono text-sm truncate">{displayValue}</div>
+                </div>
+                {/* Clipboard/Check Button */}
+                <div className="shrink-0">
+                    <button
+                        onClick={copyToClipboard}
+                        className="p-1 rounded-full text-gray-400 hover:text-yellow-500 transition-colors"
+                        aria-label={`Copy ${label}`}
+                    >
+                        <AnimatePresence mode="wait" initial={false}>
+                            {copiedField === fieldName ? (
+                                <motion.div
+                                    key="check"
+                                    initial={{ opacity: 0, scale: 0.5 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.5 }}
+                                    transition={{ duration: 0.15 }}
+                                >
+                                    <CheckCircle size={16} className="text-green-500" />
+                                </motion.div>
+                            ) : (
+                                <motion.div
+                                    key="copy"
+                                    initial={{ opacity: 0, scale: 0.5 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.5 }}
+                                    transition={{ duration: 0.15 }}
+                                >
+                                    <Clipboard size={16} />
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </button>
+                </div>
+            </div>
+        </div>
+    )
+}
+
 // --- 3. MAIN STEP COMPONENTS ---
 
 /**
- * STEP 1: PAYMENT/CONFIGURATION
+ * STEP 1: CONFIGURATION
+ * UPDATED: The two main columns are reordered and assigned 'lg:order' classes 
+ * to display "Configure Purchase" above "Presale Benefits" on mobile.
  */
 const StepOnePayment = ({
   details,
@@ -73,13 +137,6 @@ const StepOnePayment = ({
   setDetails: any,
   onNext: () => void
 }) => {
-  const [copiedField, setCopiedField] = useState<string | null>(null)
-
-  const copyToClipboard = (text: string, field: string) => {
-    navigator.clipboard.writeText(text)
-    setCopiedField(field)
-    setTimeout(() => setCopiedField(null), 2000)
-  }
   
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value
@@ -104,169 +161,187 @@ const StepOnePayment = ({
 
   return (
     <motion.div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8" {...fadeInUp}>
+
+      {/* 1. Purchase Configuration Input + Summary (Now first in source, uses lg:order-2 for desktop right side) */}
+      <div className="lg:col-span-7 flex flex-col gap-4 lg:order-2">
+
+        {/* Purchase Configuration Input Box */}
+        <div className="bg-[#121214] border border-white/10 rounded-xl p-4 shadow-2xl">
+          <h3 className="text-white font-bold text-base tracking-wide uppercase mb-3 flex items-center gap-2">
+            <Wallet size={16} className="text-yellow-500" /> Configure Purchase
+          </h3>
+
+          <div className="relative mb-4">
+            <label className="text-gray-500 text-xs font-bold uppercase tracking-wider ml-1 mb-1 block">
+              Enter Amount (SOL)
+            </label>
+            <div className="relative group">
+              <input
+                type="text"
+                value={details.solAmount}
+                onChange={handleAmountChange}
+                className={`w-full bg-black/50 border ${!isSolAmountValid && details.solAmount !== "" ? 'border-red-500' : 'border-white/8'} rounded-md py-1.5 pl-2 pr-10 text-white text-base font-semibold focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500/20 focus:outline-none transition-all placeholder:text-gray-700`}
+                placeholder="0.1 (Minimum)"
+              />
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 pointer-events-none">
+                <span className="text-gray-500 text-xs font-medium">SOL</span>
+                <div className="w-6 h-6 rounded-full bg-[#2b2b30] flex items-center justify-center">
+                  <img src="https://cryptologos.cc/logos/solana-sol-logo.png?v=029" alt="SOL" className="w-4 h-4" />
+                </div>
+              </div>
+            </div>
+            <div className="mt-1 flex justify-between text-xs">
+              <span className="text-gray-500">Min: 0.1 SOL</span>
+              <span className="text-gray-400">Rate: 1 SOL = {RATE_PER_SOL.toLocaleString()} TRW</span>
+            </div>
+            {!isSolAmountValid && details.solAmount !== "" && (
+              <p className="text-red-500 text-xs mt-1">Minimum purchase is 0.1 SOL.</p>
+            )}
+          </div>
+
+          {/* Coin Summary Box */}
+          <div className="bg-black/40 border border-white/10 rounded-xl p-3 shadow-inner relative overflow-hidden group">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-white font-semibold text-sm tracking-wide uppercase flex items-center gap-2">
+                <ShieldCheck size={16} className="text-green-500" /> Your Allocation
+              </h3>
+              <span className="bg-yellow-500/20 text-yellow-500 text-xs font-bold px-2 py-0.5 rounded-full border border-yellow-500/20">
+                Stage 1 Live
+              </span>
+            </div>
+
+            <div className="space-y-1">
+              <SummaryRow label="Base Tokens" value={`${details.baseTokens.toLocaleString()} TRW`} />
+              <SummaryRow label={`Bonus (${BONUS_PERCENT * 100}%)`} value={`+${details.bonusTokens.toLocaleString()} TRW`} valueColor="text-yellow-400" />
+              <div className="h-px bg-white/10 my-2" />
+              <div className="flex justify-between items-end pt-1">
+                <span className="text-gray-400 text-sm font-medium">TOTAL $TRW</span>
+                <span className="text-white font-bold text-lg">{details.totalTokens.toLocaleString()} <span className="text-yellow-500 text-xs">TRW</span></span>
+              </div>
+            </div>
+          </div>
+          
+          <button
+            onClick={onNext}
+            disabled={!isSolAmountValid}
+            className={`w-full mt-4 group relative ${isSolAmountValid ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-400 hover:to-yellow-500 shadow-yellow-500/20' : 'bg-gray-600/50 text-gray-400 cursor-not-allowed'} text-black font-bold text-sm py-2 rounded-md transition-all transform active:scale-[0.99] shadow-md flex items-center justify-center gap-2 overflow-hidden`}
+          >
+            <span className="relative z-10">Proceed to Payment Details</span>
+            <ArrowRight className="relative z-10 group-hover:translate-x-1 transition-transform" size={16} strokeWidth={3} />
+            {isSolAmountValid && <div className="absolute inset-0 h-full w-full scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left bg-gradient-to-r from-transparent via-white/20 to-transparent" />}
+          </button>
+
+        </div>
+      </div>
+
+      {/* 2. Page Title & Description + Benefit Cards (Now second in source, uses lg:order-1 for desktop left side) */}
+      <div className="lg:col-span-5 space-y-6 lg:order-1">
         
-        {/* LEFT COLUMN: Page Title & Description */}
-        <div className="lg:col-span-5 space-y-4">
-            <div className="mb-4">
-                <h1 className="text-xl md:text-2xl font-bold text-white mb-1 leading-tight">
-                    <span className="text-yellow-500">Fast Track</span> Presale Payment
-                </h1>
-                <p className="text-gray-400 text-sm">
-                    Enter the SOL amount below and send the exact funds to the provided wallet address to secure your $TRW allocation instantly.
-                </p>
-            </div>
+        {/* Page Title & Description */}
+        <div className="mb-4">
+          <h1 className="text-xl md:text-2xl font-bold text-white mb-1 leading-tight">
+            <span className="text-yellow-500">Fast Track</span> Presale Configuration
+          </h1>
+          <p className="text-gray-400 text-sm">
+            Enter the amount of SOL you wish to invest. Your $TRW allocation, including a **10% bonus**, will be calculated below.
+          </p>
         </div>
-
-        {/* RIGHT COLUMN: Payment/Input Area + Benefit Cards */}
-        <div className="lg:col-span-7 flex flex-col gap-4">
-
-            {/* 1. Payment Details Input */}
-            <div className="bg-[#121214] border border-white/10 rounded-xl p-4 shadow-2xl">
-                <h3 className="text-white font-bold text-base tracking-wide uppercase mb-3 flex items-center gap-2">
-                    <Wallet size={16} className="text-yellow-500"/> Configure Purchase
-                </h3>
-
-                <div className="relative mb-4">
-                    <label className="text-gray-500 text-xs font-bold uppercase tracking-wider ml-1 mb-1 block">
-                        Enter Amount (SOL)
-                    </label>
-                    <div className="relative group">
-                        <input
-                            type="text"
-                            value={details.solAmount}
-                            onChange={handleAmountChange}
-                            className={`w-full bg-black/50 border ${!isSolAmountValid && details.solAmount !== "" ? 'border-red-500' : 'border-white/8'} rounded-md py-1.5 pl-2 pr-10 text-white text-base font-semibold focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500/20 focus:outline-none transition-all placeholder:text-gray-700`}
-                            placeholder="0.1 (Minimum)"
-                        />
-                        <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 pointer-events-none">
-                            <span className="text-gray-500 text-xs font-medium">SOL</span>
-                            <div className="w-6 h-6 rounded-full bg-[#2b2b30] flex items-center justify-center">
-                                <img src="https://cryptologos.cc/logos/solana-sol-logo.png?v=029" alt="SOL" className="w-4 h-4" />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="mt-1 flex justify-between text-xs">
-                        <span className="text-gray-500">Min: 0.1 SOL</span>
-                        <span className="text-gray-400">Rate: 1 SOL = {RATE_PER_SOL.toLocaleString()} TRW</span>
-                    </div>
-                    {!isSolAmountValid && details.solAmount !== "" && (
-                      <p className="text-red-500 text-xs mt-1">Minimum purchase is 0.1 SOL.</p>
-                    )}
-                </div>
-
-                {/* Coin Summary Box */}
-                <div className="bg-black/40 border border-white/10 rounded-xl p-3 shadow-inner relative overflow-hidden group">
-                    <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-white font-semibold text-sm tracking-wide uppercase flex items-center gap-2">
-                            <ShieldCheck size={16} className="text-green-500" /> Your Allocation
-                        </h3>
-                        <span className="bg-yellow-500/20 text-yellow-500 text-xs font-bold px-2 py-0.5 rounded-full border border-yellow-500/20">
-                            Stage 1 Live
-                        </span>
-                    </div>
-            
-                    <div className="space-y-1">
-                        <SummaryRow label="Base Tokens" value={`${details.baseTokens.toLocaleString()} TRW`} />
-                        <SummaryRow label={`Bonus (${BONUS_PERCENT * 100}%)`} value={`+${details.bonusTokens.toLocaleString()} TRW`} valueColor="text-yellow-400" />
-                        <div className="h-px bg-white/10 my-2" />
-                        <div className="flex justify-between items-end pt-1">
-                            <span className="text-gray-400 text-sm font-medium">TOTAL $TRW</span>
-                            <span className="text-white font-bold text-lg">{details.totalTokens.toLocaleString()} <span className="text-yellow-500 text-xs">TRW</span></span>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            {/* 2. Recipient Address/Warning Area */}
-            <div className="bg-[#121214] border border-white/10 rounded-xl p-4 shadow-2xl">
-                <h3 className="text-white font-bold text-base tracking-wide uppercase mb-3">
-                    Payment Transfer
-                </h3>
-                
-                <div className="space-y-4">
-                    {/* Address Card */}
-                    <div className="space-y-1">
-                        <label className="text-gray-400 text-xs font-bold uppercase ml-1">Recipient Address</label>
-                        <div className="flex items-center justify-between bg-black/40 border border-white/10 rounded-lg p-3 group">
-                            <div
-                                className="overflow-hidden mr-4"
-                            >
-                                <div className="text-gray-300 font-mono text-xs truncate">{WALLET_ADDRESS}</div>
-                                <div className="text-gray-600 text-xs mt-1">Solana Network (SPL)</div>
-                            </div>
-                            {/* Clipboard/Check Button */}
-                            <div className="shrink-0">
-                                <button
-                                    onClick={() => copyToClipboard(WALLET_ADDRESS, "address")}
-                                    className="p-1 rounded-full text-gray-400 hover:text-yellow-500 transition-colors"
-                                    aria-label="Copy Address"
-                                >
-                                    <AnimatePresence mode="wait" initial={false}>
-                                        {copiedField === "address" ? (
-                                            <motion.div
-                                                key="check"
-                                                initial={{ opacity: 0, scale: 0.5 }}
-                                                animate={{ opacity: 1, scale: 1 }}
-                                                exit={{ opacity: 0, scale: 0.5 }}
-                                                transition={{ duration: 0.15 }}
-                                            >
-                                                <CheckCircle size={16} className="text-green-500" />
-                                            </motion.div>
-                                        ) : (
-                                            <motion.div
-                                                key="copy"
-                                                initial={{ opacity: 0, scale: 0.5 }}
-                                                animate={{ opacity: 1, scale: 1 }}
-                                                exit={{ opacity: 0, scale: 0.5 }}
-                                                transition={{ duration: 0.15 }}
-                                            >
-                                                <Clipboard size={16} />
-                                            </motion.div>
-                                        )}
-                                    </AnimatePresence>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Warning */}
-                    <div className="flex gap-3 p-3 bg-red-500/5 border border-red-500/10 rounded-lg">
-                      <AlertCircle className="text-red-500 shrink-0" size={18} />
-                      <p className="text-red-500/80 text-xs leading-relaxed">
-                        **CRITICAL:** Only send the **EXACT** amount of **{details.solAmount} SOL** via the Solana network. Sending any other asset or amount may result in permanent loss.
-                      </p>
-                    </div>
-
-                    <button
-                        onClick={onNext}
-                        disabled={!isSolAmountValid}
-                        className={`w-full group relative ${isSolAmountValid ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-400 hover:to-yellow-500 shadow-yellow-500/20' : 'bg-gray-600/50 text-gray-400 cursor-not-allowed'} text-black font-bold text-sm py-2 rounded-md transition-all transform active:scale-[0.99] shadow-md flex items-center justify-center gap-2 overflow-hidden`}
-                    >
-                        <span className="relative z-10">I've Sent {details.solAmount} SOL - Proceed to Verification</span>
-                        <ArrowRight className="relative z-10 group-hover:translate-x-1 transition-transform" size={16} strokeWidth={3} />
-                        {isSolAmountValid && <div className="absolute inset-0 h-full w-full scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left bg-gradient-to-r from-transparent via-white/20 to-transparent" />}
-                    </button>
-                </div>
-            </div>
-            
-            {/* 3. Benefit Cards (MOVED TO THE END OF THE RIGHT COLUMN) */}
-            <div className="space-y-3">
-                <BenefitCard icon={<Zap className="text-yellow-400" size={20} />} title="Early Investor Advantage" desc="Get in early with pre-launch pricing before exchange listing." />
-                <BenefitCard icon={<Star className="text-yellow-400" size={20} />} title="Presale Bonuses" desc="Current stage offers 10% bonus coins on all purchases." highlight />
-                <BenefitCard icon={<Lock className="text-yellow-400" size={20} />} title="Limited Supply" desc="Only 40% of total supply available during presale." />
-                <BenefitCard icon={<TrendingUp className="text-yellow-400" size={20} />} title="Limited Time Offer" desc="Price increases in the next stage. Act fast." />
-            </div>
-            
+        
+        {/* Benefit Cards */}
+        <div className="space-y-3">
+          <h3 className="text-white font-bold text-base tracking-wide uppercase flex items-center gap-2 mb-2">
+            <TrendingUp size={16} className="text-yellow-500" /> Presale Benefits
+          </h3>
+          <BenefitCard icon={<Zap className="text-yellow-400" size={20} />} title="Early Investor Advantage" desc="Get in early with pre-launch pricing before exchange listing." />
+          <BenefitCard icon={<Star className="text-yellow-400" size={20} />} title="Presale Bonuses" desc="Current stage offers 10% bonus coins on all purchases." highlight />
+          <BenefitCard icon={<Lock className="text-yellow-400" size={20} />} title="Limited Supply" desc="Only 40% of total supply available during presale." />
+          <BenefitCard icon={<TrendingUp className="text-yellow-400" size={20} />} title="Limited Time Offer" desc="Price increases in the next stage. Act fast." />
         </div>
+      </div>
     </motion.div>
   )
 }
 
+
 /**
- * STEP 2: VERIFICATION
+ * STEP 2: TRANSFER (Payment Instructions)
  */
-const StepTwoVerification = ({ details }: { details: any }) => {
+const StepTwoTransfer = ({ details, onNext }: { details: any, onNext: () => void }) => {
+    const [copiedField, setCopiedField] = useState<string | null>(null)
+    
+    // Payment Instruction Items
+    const paymentSteps = [
+        `Copy the address and exact amount: ${details.solAmount} SOL.`,
+        "Send payment from your external Solana wallet or exchange.",
+        "Wait for blockchain confirmation (usually 5–10 min).",
+        "Click 'I've Sent Payment' below once complete."
+    ]
+
+    return (
+        <motion.div className="max-w-xl mx-auto" {...fadeInUp}>
+            <div className="bg-[#121214] border border-white/10 rounded-xl p-6 shadow-2xl relative">
+                <h2 className="text-2xl font-bold text-white mb-2 text-center">Complete Your Payment</h2>
+                <p className="text-gray-400 text-sm mb-6 text-center">
+                    To secure your **{details.totalTokens.toLocaleString()} $TRW** tokens, send the **exact amount** of **{details.solAmount} SOL** to the wallet address below.
+                </p>
+
+                <div className="space-y-4">
+                    
+                    {/* Recipient Address */}
+                    <CopyField
+                        label="Recipient Wallet Address (Solana Network)"
+                        textToCopy={WALLET_ADDRESS}
+                        // Truncate display for better fit, but copy full address
+                        displayValue={`${WALLET_ADDRESS.substring(0, 10)}...${WALLET_ADDRESS.substring(WALLET_ADDRESS.length - 10)}`}
+                        fieldName="address"
+                        copiedField={copiedField}
+                        setCopiedField={setCopiedField}
+                    />
+
+                    {/* How to Pay - Updated Styling */}
+                    <div className="bg-black/40 border border-white/10 rounded-lg p-4">
+                        <h3 className="text-white font-bold text-sm tracking-wide uppercase mb-3 flex items-center gap-2">
+                            <ListOrdered size={16} className="text-yellow-500" /> How to Pay
+                        </h3>
+                        <ul className="space-y-2">
+                            {paymentSteps.map((step, index) => (
+                                <li key={index} className="flex items-start gap-2">
+                                    <CheckCircle size={16} className="text-yellow-500 mt-[2px] shrink-0" />
+                                    <span className="text-gray-300 font-medium text-sm leading-snug">
+                                        {step}
+                                    </span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    {/* Warning */}
+                    <div className="flex gap-3 p-3 bg-red-500/5 border border-red-500/10 rounded-lg">
+                        <AlertCircle className="text-red-500 shrink-0" size={18} />
+                        <p className="text-red-500/80 text-xs leading-relaxed">
+                            **CRITICAL:** Only send the **EXACT** amount of **{details.solAmount} SOL** via the Solana network. Sending any other asset or incorrect amount may result in permanent loss.
+                        </p>
+                    </div>
+
+                    <button
+                        onClick={onNext}
+                        className="w-full mt-2 group relative bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-400 hover:to-yellow-500 shadow-yellow-500/20 text-black font-bold text-sm py-2 rounded-md transition-all transform active:scale-[0.99] shadow-md flex items-center justify-center gap-2 overflow-hidden"
+                    >
+                        <span className="relative z-10">I've Sent Payment - Proceed to Verification</span>
+                        <ArrowRight className="relative z-10 group-hover:translate-x-1 transition-transform" size={16} strokeWidth={3} />
+                        <div className="absolute inset-0 h-full w-full scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                    </button>
+                </div>
+            </div>
+        </motion.div>
+    )
+}
+
+
+/**
+ * STEP 3: VERIFICATION
+ */
+const StepThreeVerification = ({ details }: { details: any }) => {
   const navigate = useNavigate()
   const [timeLeft, setTimeLeft] = useState(3600)
 
@@ -312,11 +387,14 @@ const StepTwoVerification = ({ details }: { details: any }) => {
             <SummaryRow label="Total Coins" value={`${details.totalTokens.toLocaleString()} TRW`} />
           </div>
 
+          {/* UPDATED BUTTON STYLE */}
           <button
             onClick={() => navigate("/")}
-            className="mt-6 text-gray-500 hover:text-white text-sm font-medium transition-colors"
+            className="w-full mt-6 group relative bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-400 hover:to-yellow-500 shadow-yellow-500/20 text-black font-bold text-sm py-2 rounded-md transition-all transform active:scale-[0.99] shadow-md flex items-center justify-center gap-2 overflow-hidden"
           >
-            Return to Dashboard
+            <span className="relative z-10">Return to Dashboard</span>
+            <ArrowRight className="relative z-10 group-hover:translate-x-1 transition-transform" size={16} strokeWidth={3} />
+            <div className="absolute inset-0 h-full w-full scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left bg-gradient-to-r from-transparent via-white/20 to-transparent" />
           </button>
         </div>
       </div>
@@ -328,8 +406,8 @@ const StepTwoVerification = ({ details }: { details: any }) => {
 
 export default function WaitingForPaymentPage() {
   const navigate = useNavigate()
-  // Start at the new Step 1 (Payment)
-  const [step, setStep] = useState<1 | 2>(1)
+  // Step state is now 1 | 2 | 3
+  const [step, setStep] = useState<1 | 2 | 3>(1)
 
   const [purchaseDetails, setPurchaseDetails] = useState({
     solAmount: "0.2", // Initial default value
@@ -339,8 +417,8 @@ export default function WaitingForPaymentPage() {
     orderId: "#702682031" // Example order ID
   })
 
+  // Initial calculation based on default solAmount
   useEffect(() => {
-    // Initial calculation based on default solAmount
     const initialSol = parseFloat(purchaseDetails.solAmount) || 0
     const base = initialSol * RATE_PER_SOL
     const bonus = base * BONUS_PERCENT
@@ -353,6 +431,14 @@ export default function WaitingForPaymentPage() {
     window.scrollTo(0, 0)
   }, [])
 
+  // Back button handler to handle navigation between steps
+  const handleBack = () => {
+    if (step > 1) {
+        setStep(s => (s - 1) as 1 | 2 | 3);
+    } else {
+        navigate(-1);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-[#08080a] bg-gradient-to-b from-[#08080a] to-[#0c0c0f] text-white font-sans selection:bg-yellow-500/30 pb-20 relative overflow-x-hidden">
@@ -366,18 +452,20 @@ export default function WaitingForPaymentPage() {
 
         {/* Small Back Button (Absolute positioning for top left) */}
         <button
-          onClick={() => navigate(-1)}
+          onClick={handleBack}
           aria-label="Back"
           className="absolute left-4 top-4 w-8 h-8 flex items-center justify-center text-gray-300 hover:text-white transition-all rounded-full bg-transparent border border-white/5 hover:bg-white/5"
         >
           <ArrowLeft size={16} />
         </button>
 
-        {/* Step Indicator at Top Center */}
+        {/* Step Indicator at Top Center (Now 3 steps) */}
         <div className="flex items-center gap-3">
           <StepDot current={step} stepNum={1} />
           <div className={`w-8 h-0.5 ${step > 1 ? 'bg-yellow-500' : 'bg-gray-800'} transition-colors`} />
           <StepDot current={step} stepNum={2} />
+          <div className={`w-8 h-0.5 ${step > 2 ? 'bg-yellow-500' : 'bg-gray-800'} transition-colors`} />
+          <StepDot current={step} stepNum={3} />
         </div>
       </header>
 
@@ -389,12 +477,19 @@ export default function WaitingForPaymentPage() {
               key="step1"
               details={purchaseDetails}
               setDetails={setPurchaseDetails}
-              onNext={() => setStep(2)}
+              onNext={() => setStep(2)} // Go to Step 2: Transfer
             />
           )}
           {step === 2 && (
-            <StepTwoVerification
+            <StepTwoTransfer
               key="step2"
+              details={purchaseDetails}
+              onNext={() => setStep(3)} // Go to Step 3: Verification
+            />
+          )}
+          {step === 3 && (
+            <StepThreeVerification
+              key="step3"
               details={purchaseDetails}
             />
           )}

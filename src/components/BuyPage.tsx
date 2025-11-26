@@ -550,12 +550,7 @@ const PreSale = () => {
               <div className="flex flex-col items-center">
 
 
-                <motion.h3 className="uppercase text-center text-xs sm:text-sm lg:text-[16px] mb-3 text-gradient leading-tight sm:leading-normal mt-2 sm:mt-0">
-                  <span className="inline-block">
-                    Real opportunities don't wait. $TRW enters the market at just $0.25,<br className="hidden sm:block" />
-                    your chance to escape the matrix now!
-                  </span>
-                </motion.h3>
+                
               </div>
             </div>
 

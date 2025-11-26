@@ -97,61 +97,8 @@ const Qoute = () => {
             custom={0}
           >
             <div className="z-10 relative flex flex-col items-center px-4">
-              {/* Header */}
-              <motion.h3
-                className="uppercase text-center mb-3 text-gradient"
-                variants={fadeUp}
-                custom={0}
-              >
-                STILL THINKING?
-              </motion.h3>
-              <motion.h2
-                className="text-center mb-8 capitalize switzer tracking-[-1px] lg:tracking-[-3px] !text-[44px] lg:!text-[55px]"
-                variants={fadeUp}
-                custom={0.08}
-              >
-                <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
-                  Words
-                </span>{" "}
-                <span className="text-white">of Wisdom</span>
-              </motion.h2>
-
-
-              {/* Quotes Section */}
-              <motion.div
-                className="max-w-[856px] mx-auto fade-in visible"
-                variants={containerVariants}
-              >
-                <motion.div
-                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-                  variants={containerVariants}
-                >
-                  {quotes.map((q, idx) => (
-                    <motion.div
-                      key={q.text}
-                      className="quote-card bg-[#0C1021] hover:bg-[#171D27] border-[1px] border-[rgba(255,255,255,.2)] rounded-[20px] p-6 group  shadow-md"
-                      variants={cardVariants}
-                      custom={idx}
-                      whileHover={{
-
-                        boxShadow: "0 12px 40px 0 #0007",
-                        borderColor: "#FFCF23",
-                        transition: { duration: 0.18 },
-                      }}
-                      whileTap={{
-                        scale: 0.97,
-                      }}
-                    >
-                      <p className="text-white text-base leading-loose">
-                        {q.text}
-                      </p>
-                      <p style={{ color: "gray" }} className="text-right text-[#FFCF23] font-bold mt-4">{q.author}</p>
-                    </motion.div>
-                  ))}
-                </motion.div>
-              </motion.div>
-
-
+              {/* Header - This section was removed: STILL THINKING? Words of Wisdom */}
+              {/* Quotes Section - This section was removed: All quote cards */}
             </div>
           </motion.div>
         </motion.section>
