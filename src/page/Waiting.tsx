@@ -296,7 +296,7 @@ const StepTwoTransfer = ({ details, onNext }: { details: any, onNext: () => void
 
                         // Truncate display for better fit, but copy full address
 
-                        displayValue={`${WALLET_ADDRESS.substring(0, 10)}...${WALLET_ADDRESS.substring(WALLET_ADDRESS.length - 10)}`}
+                        displayValue={WALLET_ADDRESS}
 
                         fieldName="address"
 
@@ -341,8 +341,6 @@ const StepTwoTransfer = ({ details, onNext }: { details: any, onNext: () => void
                     </div>
 
 
-
-                
 
                     <button
 

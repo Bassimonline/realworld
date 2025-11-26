@@ -201,7 +201,7 @@ const Hero = () => {
 
         {/* Hero Section */}
         <div style={{ opacity: 1, transform: "translateY(0px)" }}>
-          <section className="pb-8 lg:pb-4 flex flex-col items-center max-w-[1059px] mx-auto px-4 sm:px-6 pt-8 sm:pt-12">
+          <section className="pb-8 lg:pb-32 flex flex-col items-center max-w-[1059px] mx-auto px-4 sm:px-6 pt-8 sm:pt-12">
 
             <motion.div
               className="mb-4 w-full px-4"
@@ -296,7 +296,7 @@ const Hero = () => {
                 />
                 <div className="flex items-center justify-center h-[48px] sm:h-[56px] md:h-[68px] w-full min-w-[140px] max-w-[340px] m-auto select-none">
                   <span className="font-extrabold text-neutral-900 text-xl sm:text-2xl md:text-3xl tracking-tight drop-shadow-[0_1px_8px_rgba(255,255,255,0.10)]">
-                    JOIN THE REAL WORLD
+                    BUY $TRW
                   </span>
                 </div>
               </motion.div>
@@ -356,43 +356,6 @@ const Hero = () => {
               </div>
             )}
 
-            {/* Buy TRW Button */}
-            <motion.button
-              onClick={() => navigate("/token-sale")}
-              type="button"
-              className="block w-full max-w-[280px] sm:max-w-[340px] rounded-full mx-auto px-2 mt-8 lg:mt-10"
-              variants={btnVariants}
-              initial="initial"
-              animate="animate"
-              whileTap="tap"
-              whileHover="animate"
-              style={{ WebkitTapHighlightColor: "transparent" }}
-              aria-label="Buy TRW"
-            >
-              <motion.div
-                className="relative w-full rounded-full overflow-hidden"
-                style={{ background: "linear-gradient(91deg,#ffd600 0%,#ff8d3a 100%)" }}
-                layout
-                transition={{ duration: 0.28, ease: "easeInOut" }}
-              >
-                <motion.div
-                  className="absolute left-0 top-0 w-1/2 h-full pointer-events-none z-10"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: [0, 0.18, 0], x: ["-55%", "120%"] }}
-                  transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut", delay: 0.28 }}
-                  style={{
-                    background:
-                      "linear-gradient(120deg,rgba(255,255,255,0.0) 40%,rgba(255,255,255,0.16) 55%,rgba(255,255,255,0.0) 70%)",
-                    filter: "blur(8px)",
-                  }}
-                />
-                <div className="flex items-center justify-center h-[48px] sm:h-[56px] md:h-[68px] w-full min-w-[140px] max-w-[340px] m-auto select-none">
-                  <span className="font-extrabold text-neutral-900 text-xl sm:text-2xl md:text-3xl tracking-tight drop-shadow-[0_1px_8px_rgba(255,255,255,0.10)]">
-                    BUY $TRW
-                  </span>
-                </div>
-              </motion.div>
-            </motion.button>
 
           </section>
         </div>
