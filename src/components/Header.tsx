@@ -97,7 +97,7 @@ const Header = () => {
 
           {/* X.com Icon (Desktop) */}
           <motion.a
-            href="https://x.com/trwsol2?s=21"
+            href="https://x.com/trwofficialcoin?s=21"
             target="_blank"
             rel="noopener noreferrer"
             className="ml-2"
