@@ -107,7 +107,7 @@ const LiveSession: React.FC = () => {
                 viewport={{ once: true }}
               >
                 <Link
-                  to="/about"
+                  to="https://www.jointherealworld.com"
                   className="relative inline-flex items-center justify-center px-6 py-2.5 sm:px-8 sm:py-3.5 overflow-hidden font-medium group"
                 >
                   <span className="absolute inset-0 bg-gradient-to-r from-[#f0b90b] to-[#f8d030] opacity-90 group-hover:opacity-100 transition-all duration-300"></span>
