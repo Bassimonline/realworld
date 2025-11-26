@@ -1,53 +1,31 @@
+/* src/components/HeroVideo/HeroVideo.module.css */
+
 .heroVideo {
   position: relative;
-  width: min(92vw, 1020px);
-  aspect-ratio: 25 / 18;
+  
+  /* --- CRITICAL CHANGES FOR SMALL GAP --- */
+  /* Remove large width and aspect ratio */
+  width: 100%;
+  height: 30px; /* Set a small, fixed height for the gap */
+  
+  /* Use small, consistent margins */
+  margin-top: 0.5rem; 
+  margin-bottom: 0.5rem; 
+  /* --- END CRITICAL CHANGES --- */
+
+  /* Keep container properties simplified */
   overflow: hidden;
   margin-inline: auto;
-  border-radius: 12px;
-
-  /* compact spacing */
-  margin-top: 1.25rem;
-  margin-bottom: 10px;
+  border-radius: 0; 
 }
 
+/* The .video class is no longer needed but is hidden for safety */
 .video {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  border-radius: 12px;
-  background: transparent;
-      margin-top: 0rem;
-
+  display: none;
 }
 
-/* Mobile: bigger look without changing layout width */
-@media (max-width: 768px) {
-  .heroVideo {
-    width: 92vw;          /* keep centered width */
-    aspect-ratio: 25 / 16;/* slightly taller */
-margin-top: -2rem;
-    margin-bottom: 25px;
-  }
-  .video {
-    transform: scale(0.8);           /* visually larger */
-    transform-origin: center center;  /* don’t drift */
-  }
-}
-
-/* Extra-small phones: a touch more scale */
-@media (max-width: 480px) {
-  .heroVideo {
-    width: 94vw;
-    aspect-ratio: 25 / 16;
-    margin-top: 2.5rem;
-    margin-bottom: 100px;
-    transform: scale(1.90);
-  }
-  .video {
-   
-  }
-}
+/* Remove all media queries as a simple gap shouldn't change size on mobile */
+/*
+@media (max-width: 768px) { ... }
+@media (max-width: 480px) { ... }
+*/

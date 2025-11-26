@@ -68,7 +68,7 @@ const btnVariants: Variants = {
  * Chosen so that at the moment of this change it equals 22d 23h 23m 59s left.
  * If you need to change later, update this ISO string.
  */
-const SALE_END_ISO = "2025-12-05T23:59:59Z"; // ✅ global, consistent across devices
+const SALE_END_ISO = "2025-12-16T23:59:59Z"; // ✅ global, consistent across devices
 const SALE_END_TS = Date.parse(SALE_END_ISO);
 
 const CountdownTimer = () => {
