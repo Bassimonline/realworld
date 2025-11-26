@@ -188,7 +188,7 @@ const Steps = () => {
 
                 {/* CTA Button (Reduced padding) */}
                 <div className="flex justify-center mt-6">
-                  <a href="https://t.me/+Xy3Ea4bUeoZmN2Qy">
+                  <a href="https://t.me/trwverifychannel">
                       <motion.button
                         aria-label="Join The Real World"
                         className={[

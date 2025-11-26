@@ -76,7 +76,7 @@ const Header = () => {
 
           {/* Telegram Icon (Desktop) */}
           <motion.a
-            href="https://t.me/+Xy3Ea4bUeoZmN2Qy"
+            href="https://t.me/trwverifychannel"
             target="_blank"
             rel="noopener noreferrer"
             className="ml-4"
@@ -121,7 +121,7 @@ const Header = () => {
         <div className="lg:hidden flex items-center space-x-3">
           {/* Telegram Icon (Mobile) */}
           <a
-            href="https://t.me/+Xy3Ea4bUeoZmN2Qy"
+            href="https://t.me/trwverifychannel"
             target="_blank"
             rel="noopener noreferrer"
             className="w-9 h-9 rounded-full bg-[#0088CC] flex items-center justify-center hover:bg-[#0077B5] transition-colors duration-300"
