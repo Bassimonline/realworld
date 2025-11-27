@@ -419,9 +419,9 @@ const PreSale = () => {
                 <input
                   id="quick-slider"
                   type="range"
-                  min={5}
-                  max={20}
-                  step={5}
+                  min={1}
+                  max={15}
+                  step={1}
                   value={quickValue}
                   onChange={(e) => {
                     const value = Number(e.target.value);
@@ -437,7 +437,7 @@ const PreSale = () => {
                 />
 
                 <div className="flex justify-between text-gray-500 text-[10px] sm:text-xs mt-2">
-                  {[5, 10, 15, 20].map((v) => (
+                  {[1, 5, 10, 15].map((v) => (
                     <div key={v} className="relative flex flex-col items-center cursor-pointer" onClick={() => {
                         setQuickValue(v);
                         setAmount(v.toString());
