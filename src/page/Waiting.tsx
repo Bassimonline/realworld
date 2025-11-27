@@ -162,9 +162,7 @@ const StepTwoTransfer = ({ details, onNext }: { details: any, onNext: () => void
                 {/* --- MODIFIED TEXT/AMOUNT BLOCK START (WIDER, TOKEN TEXT REMOVED) --- */}
                 <div className="text-center mb-6">
                     {/* Token text removed as requested */}
-                    <p className="text-gray-400 text-sm mb-4">
-                        Please send the **exact amount** shown below:
-                    </p>
+
                     
                     {/* The wider, animated amount display with "snake line" effect */}
                     <div className="flex justify-center">
@@ -201,7 +199,7 @@ const StepTwoTransfer = ({ details, onNext }: { details: any, onNext: () => void
                     
                     {/* Recipient Address */}
                     <CopyField
-                        label="Recipient Wallet Address (Solana Network)"
+                        label="Recipient Wallet Address"
                         textToCopy={WALLET_ADDRESS}
                         displayValue={WALLET_ADDRESS}
                         fieldName="address"
